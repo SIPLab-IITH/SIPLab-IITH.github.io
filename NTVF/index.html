@@ -35,7 +35,7 @@
     }
 
     .main-container {
-      width: 90%;
+      width: 85%;
       display: flex;
       flex-wrap: wrap;
       border-top: 2px solid;
@@ -52,19 +52,25 @@
     .heading {
       text-align: left;
       position: relative;
-      left: 100px;
+      left: 150px;
       font-size: 26px;
       font-weight: 600;
     }
     .heading2 {
       text-align: left;
       position: relative;
-      left: 100px;
+      left: 160px;
       font-size: 20px;
       font-weight: 500;
     }
     .heading3 {
       text-align: center;
+      position: relative;
+      font-size: 20px;
+      font-weight: 500;
+    }
+    .heading4 {
+      text-align: left;
       position: relative;
       font-size: 20px;
       font-weight: 500;
@@ -126,8 +132,8 @@
       <div class="in-container">
         <img src="./gates_p232_010_2.5dB_cafe.png" alt="">
       </div>
+    <h4> <b>Observations:</b> The figure on the right corresponding to the cafe noise is highly nonstationary resulting in the shorter context getting activated more when compared with the figure in left with bus noise which is relatively stationary. It is clearly observed that the gating functions with higher resolution(17,5) in the left figure is more darker than it is in the right figure which indicates its activity is relatively more in stationary noise case. Due to the highly nonstationary nature of the cafe noise, the spectral harmonics and transitions are not clearly visible.</h4>
     </div>
-
     <h2 class="heading">At different SNRs</h2>
     <h3 class="heading2"><b>left:</b> 2.5dB <br> <b>right:</b> 17.5dB</h3>
     <div class=" main-container">
@@ -137,6 +143,7 @@
       <div class="in-container">
         <img src="./gates_p232_011_17.5dB_living.png" alt="">
       </div>
+  	<h4> <b>Observations:</b> The gating function with lower resolution(5,3) is more active in the higher SNR(right figure) case whereas it is relatively less active in lower SNR signal(left figure). Similarly, the higher resolution is getting more activated in lower SNR signal and it is relatively less activated in higher SNR signal as we can observe from the figures that the gating function with resolution (17,5) is more darker in the left figure when compared with the right figure.</h4>
     </div>
   </center>
 
