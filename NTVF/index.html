@@ -30,8 +30,16 @@
       justify-content: center;
     }
 
-    table>td> {
+    table {
+      width: 68vw;
+    }
+    table>tr>td> {
       border: none;
+    }
+
+    td, th {
+      padding:5px;
+      text-align: center;
     }
 
     .main-container {
@@ -75,6 +83,15 @@
       font-size: 20px;
       font-weight: 500;
     }
+
+    .ablation-table {
+      border: solid #000;
+    }
+
+    .ablation-table>thead>tr>th, .ablation-table>tbody>tr>td {
+      border-left: solid #000;
+      border-right: solid #000;
+    }
   </style>
 </head>
 
@@ -93,7 +110,6 @@
     <div class="container">
       <div class="boxtest_ref">
         <h1 style="color:black;text-align:center;"><b>Light-Weight Causal Speech Enhancement Using Time-Varying Multi-Resolution Filtering</b></h1>
-        <h3 class="heading3"><i>Venkatesh Parvathala, Sri Rama Murty Kodukula</i></h3>
 
         <br>
         &nbsp;
@@ -102,79 +118,158 @@
 
         <br>
 				
-        <table class="table">
-          <tbody">
-            <thead>
-              <tr>
-                <th class="align-center">S. No</th>
-                <th class="align-center">File ID</th>
-                <th class="align-center">Gender</th>
-                <th class="align-middle">Noise Type</th>
-                <th class="align-middle">Noisy</th>
-                <th class="align-middle">Enhanced(DEMUCS)</th>
-                <th class="align-middle">Enhanced(MetricGAN)</th>
-                <th class="align-middle">Enhanced(proposed)</th>
-
-              </tr>
-            </thead>
-							<tr>		
-		      			<td class="align-middle"> 1. </th>
-		      			<td class="align-middle">p232_064</td>
-                <td class="align-middle"> Male </td>
- 		      			<td class="align-middle" > PSquare </td>
-                <td><audio controls><source src="NTVF/p232_064_noisy_2.5_psquare.wav" type="audio/mpeg"></audio></td>
-                <td><audio controls><source src="NTVF/p232_064_enh_2.5_psqaure.wav" type="audio/mpeg"></audio></td>
-                <td><audio controls><source src="NTVF/p232_064_enh_2.5_psqaure.wav" type="audio/mpeg"></audio></td>
-                <td><audio controls><source src="NTVF/p232_064_enh_2.5_psqaure.wav" type="audio/mpeg"></audio></td>
-					    </tr>
-							<tr>		
-		      			<td class="align-middle"> 2. </th>
-		      			<td class="align-middle">p257_275</td>
-                <td class="align-middle"> Female </td>
- 		      			<td class="align-middle" > Living </td>
-                <td><audio controls><source src="NTVF/p257_275_noisy_2.5_living_3.wav" type="audio/mpeg"></audio></td>
-                <td><audio controls><source src="NTVF/p257_275_enh_2.5_living_3.wav" type="audio/mpeg"></audio></td>
-                <td><audio controls><source src="NTVF/p257_275_enh_2.5_living_3.wav" type="audio/mpeg"></audio></td>
-                <td><audio controls><source src="NTVF/p257_275_enh_2.5_living_3.wav" type="audio/mpeg"></audio></td>
-					    </tr>
-							<tr>		
-		      			<td class="align-middle"> 3. </th>
-		      			<td class="align-middle">p232_216</td>
-                <td class="align-middle"> Male </td>
- 		      			<td class="align-middle" > Bus </td>
-                <td><audio controls><source src="NTVF/p232_216_noisy_2.5_bus_3.wav" type="audio/mpeg"></audio></td>
-                <td><audio controls><source src="NTVF/p232_216_enh_2.5_bus_3.wav" type="audio/mpeg"></audio></td>
-                <td><audio controls><source src="NTVF/p232_216_enh_2.5_bus_3.wav" type="audio/mpeg"></audio></td>
-                <td><audio controls><source src="NTVF/p232_216_enh_2.5_bus_3.wav" type="audio/mpeg"></audio></td>
-					    </tr>
-							<tr>		
-		      			<td class="align-middle"> 4. </th>
-		      			<td class="align-middle">p257_251</td>
-                <td class="align-middle"> Female </td>
- 		      			<td class="align-middle" > Cafe </td>
-                <td><audio controls><source src="NTVF/p257_251_noisy_2.5_cafe_3.wav" type="audio/mpeg"></audio></td>
-                <td><audio controls><source src="NTVF/p257_251_enh_2.5_cafe_3.wav" type="audio/mpeg"></audio></td>
-                <td><audio controls><source src="NTVF/p257_251_enh_2.5_cafe_3.wav" type="audio/mpeg"></audio></td>
-                <td><audio controls><source src="NTVF/p257_251_enh_2.5_cafe_3.wav" type="audio/mpeg"></audio></td>
-					    </tr>
-							<tr>		
-		      			<td class="align-middle"> 5. </th>
-		      			<td class="align-middle">p232_373</td>
-                <td class="align-middle"> Male </td>
- 		      			<td class="align-middle" > Office </td>
-                <td><audio controls><source src="NTVF/p232_373_noisy_2.5_office.wav" type="audio/mpeg"></audio></td>
-                <td><audio controls><source src="NTVF/p232_373_enh_2.5_office.wav" type="audio/mpeg"></audio></td>
-                <td><audio controls><source src="NTVF/p232_373_enh_2.5_office.wav" type="audio/mpeg"></audio></td>
-                <td><audio controls><source src="NTVF/p232_373_enh_2.5_office.wav" type="audio/mpeg"></audio></td>
-					    </tr>
-        </tbody>
-        </table>
+        
         
       </div>
     </div>
+    <!-- <div class="container">
+      <div class="row">
+        <div class="col-12"> -->
+          <table>
+            <tbody">
+              <thead>
+                <tr style="border-bottom: solid #ddd;">
+                  <th width="10%" >S. No</th>
+                  <th width="10%">File ID</th>
+                  <!-- <th width="10%">Gender</th> -->
+                  <th width="10%">Noise Type</th>
+                  <th width="15%">Noisy</th>
+                  <th width="15%">Enhanced(DEMUCS)</th>
+                  <th width="15%">Enhanced(MetricGAN)</th>
+                  <th width="15%">Enhanced(proposed)</th>
+      
+                </tr>
+              </thead>
+                <tr>		
+                  <td > 1. </th>
+                  <td >p232_064</td>
+                  <!-- <td > Male </td> -->
+                   <td  > PSquare </td>
+                  <td><audio controls><source src="NTVF/p232_064_noisy_2.5_psquare.wav" type="audio/mpeg"></audio></td>
+                  <td><audio controls><source src="NTVF/p232_064_enh_2.5_psqaure.wav" type="audio/mpeg"></audio></td>
+                  <td><audio controls><source src="NTVF/p232_064_enh_2.5_psqaure.wav" type="audio/mpeg"></audio></td>
+                  <td><audio controls><source src="NTVF/p232_064_enh_2.5_psqaure.wav" type="audio/mpeg"></audio></td>
+                </tr>
+                <tr>		
+                  <td > 2. </th>
+                  <td >p257_275</td>
+                  <!-- <td > Female </td> -->
+                   <td  > Living </td>
+                  <td><audio controls><source src="NTVF/p257_275_noisy_2.5_living_3.wav" type="audio/mpeg"></audio></td>
+                  <td><audio controls><source src="NTVF/p257_275_enh_2.5_living_3.wav" type="audio/mpeg"></audio></td>
+                  <td><audio controls><source src="NTVF/p257_275_enh_2.5_living_3.wav" type="audio/mpeg"></audio></td>
+                  <td><audio controls><source src="NTVF/p257_275_enh_2.5_living_3.wav" type="audio/mpeg"></audio></td>
+                </tr>
+                <tr>		
+                  <td > 3. </th>
+                  <td >p232_216</td>
+                  <!-- <td > Male </td> -->
+                   <td  > Bus </td>
+                  <td><audio controls><source src="NTVF/p232_216_noisy_2.5_bus_3.wav" type="audio/mpeg"></audio></td>
+                  <td><audio controls><source src="NTVF/p232_216_enh_2.5_bus_3.wav" type="audio/mpeg"></audio></td>
+                  <td><audio controls><source src="NTVF/p232_216_enh_2.5_bus_3.wav" type="audio/mpeg"></audio></td>
+                  <td><audio controls><source src="NTVF/p232_216_enh_2.5_bus_3.wav" type="audio/mpeg"></audio></td>
+                </tr>
+                <tr>		
+                  <td > 4. </th>
+                  <td >p257_251</td>
+                  <!-- <td > Female </td> -->
+                   <td  > Cafe </td>
+                  <td><audio controls><source src="NTVF/p257_251_noisy_2.5_cafe_3.wav" type="audio/mpeg"></audio></td>
+                  <td><audio controls><source src="NTVF/p257_251_enh_2.5_cafe_3.wav" type="audio/mpeg"></audio></td>
+                  <td><audio controls><source src="NTVF/p257_251_enh_2.5_cafe_3.wav" type="audio/mpeg"></audio></td>
+                  <td><audio controls><source src="NTVF/p257_251_enh_2.5_cafe_3.wav" type="audio/mpeg"></audio></td>
+                </tr>
+                <tr>		
+                  <td > 5. </th>
+                  <td >p232_373</td>
+                  <!-- <td > Male </td> -->
+                   <td  > Office </td>
+                  <td><audio controls><source src="NTVF/p232_373_noisy_2.5_office.wav" type="audio/mpeg"></audio></td>
+                  <td><audio controls><source src="NTVF/p232_373_enh_2.5_office.wav" type="audio/mpeg"></audio></td>
+                  <td><audio controls><source src="NTVF/p232_373_enh_2.5_office.wav" type="audio/mpeg"></audio></td>
+                  <td><audio controls><source src="NTVF/p232_373_enh_2.5_office.wav" type="audio/mpeg"></audio></td>
+                </tr>
+          </tbody>
+          </table>
+        <br>
   </center>
-
-
+<!-- <div class="container">
+  <div class="row">
+    <div class="col-12"> -->
+      <h2 style="font-weight: 800; font-family: 'Times New Roman', Times, serif; margin-left: 190px;">Ablation study</h2>
+      <center>
+        <table class="ablation-table">
+          <tbody">
+            <thead>
+              <tr style="border-bottom: solid #000;">
+                <th width="5%" >Method</th>
+                <th width="5%">PESQ</th>
+                <!-- <th width="10%">Gender</th> -->
+                <th width="5%">STOI</th>
+                <th width="5%">CSIG</th>
+                <th width="5%">CBAK</th>
+                <th width="5%">COVL</th>
+                <th width="5%">SSNR</th>
+                <th width="5%">Parameters(M)</th>
+              </tr>
+            </thead>
+              <tr>		
+                <td > CIF only </th>
+                <td > 2.76 </td>
+                <td > 91.66 </td>
+                <td > 4.00 </td>
+                <td > 3.21 </td>
+                <td > 3.42 </td>
+                <td > 4.94 </td>
+                <td > 0.33 </td>
+              </tr>
+              <tr>		
+                <td > CDF only </th>
+                <td > 2.74 </td>
+                <td > 91.83 </td>
+                <td > 3.86 </td>
+                <td > 3.17 </td>
+                <td > 3.34 </td>
+                <td > 4.53 </td>
+                <td > 0.07 </td>
+              </tr>
+              <tr>		
+                <td > Mask Loss only </th>
+                <td > 2.77 </td>
+                <td > 93.51 </td>
+                <td > 4.10 </td>
+                <td > 3.43 </td>
+                <td > 3.48 </td>
+                <td > 8.11 </td>
+                <td > 0.34 </td>
+              </tr>
+              <tr>		
+                <td > Mask + Cep Loss </th>
+                <td > 2.83 </td>
+                <td > 93.47 </td>
+                <td > 4.12 </td>
+                <td > 3.41 </td>
+                <td > 3.50 </td>
+                <td > 7.65 </td>
+                <td > 0.34 </td>
+              </tr>
+              <tr>		
+                <td > Mask + Cep + GAN Loss (Proposed) </th>
+                <td > 2.94 </td>
+                <td > 93.49 </td>
+                <td > 4.22 </td>
+                <td > 3.45 </td>
+                <td > 3.63 </td>
+                <td > 7.14 </td>
+                <td > 0.34 </td>
+              </tr>
+        </tbody>
+        </table>
+      </center>
+    <!-- </div>
+  </div>
+</div> -->
 
 
 </body>
