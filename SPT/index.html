@@ -110,7 +110,7 @@
     <div class="container">
       <div class="boxtest_ref">
         <h1 style="color:black;text-align:center;"><b>Selective Passthrough </b></h1>
-        <h3 style="color:black;text-align:center;"><b>Baseline System Demo (VoiceFilter) </b></h3>
+        <!-- <h3 style="color:black;text-align:center;"><b>Baseline System Demo (VoiceFilter) </b></h3> -->
 
         <br>
         &nbsp;
@@ -133,57 +133,91 @@
                   <th width="10%" >S. No</th>
                   <th width="15%">Mixed</th>
                   <th width="15%">Speaker Embedding File</th>
-                  <th width="15%">Predicted Target</th>
+                  <th width="15%">VoiceFilter</th>
+                  <th width="15%">TVCN-Lite</th>
+                  <th width="15%">TVCN</th>
       
                 </tr>
               </thead>
                 <tr>		
                   <td > 1. </th>
                   <td><audio controls><source src="mixed/2078-142845-0028.4153-186222-0000-norm.wav" type="audio/mpeg"></audio></td>
-                  <td><audio controls><source src="embedding_wavs_sisnrloss/2078-142845-0030-norm.wav" type="audio/mpeg"></audio></td>
+                  <td><audio controls><source src="embedding_wavs/2078-142845-0030-norm.wav" type="audio/mpeg"></audio></td>
                   <td><audio controls><source src="predictions_sisnrloss/2078-142845-0028-norm.wav" type="audio/mpeg"></audio></td>
+                  <td><audio controls><source src="predictions_tvcn_lite/2078-142845-0028-norm.wav" type="audio/mpeg"></audio></td>
+                  <td><audio controls><source src="predictions_tvcn/2078-142845-0028-norm.wav" type="audio/mpeg"></audio></td>
                 </tr>
                 <tr>		
                   <td > </th>
                   <td></td>
-                  <td><audio controls><source src="embedding_wavs_sisnrloss/4153-186222-0017-norm.wav" type="audio/mpeg"></audio></td>
+                  <td><audio controls><source src="embedding_wavs/4153-186222-0017-norm.wav" type="audio/mpeg"></audio></td>
                   <td><audio controls><source src="predictions_sisnrloss/4153-186222-0000-norm.wav" type="audio/mpeg"></audio></td>
+                  <td><audio controls><source src="predictions_tvcn_lite/4153-186222-0000-norm.wav" type="audio/mpeg"></audio></td>
+                  <td><audio controls><source src="predictions_tvcn/4153-186222-0000-norm.wav" type="audio/mpeg"></audio></td>
                 </tr>
                 <tr>		
                   <td > 2. </th>
                   <td><audio controls><source src="mixed/5849-50964-0009.6267-65525-0027-norm.wav" type="audio/mpeg"></audio></td>
-                  <td><audio controls><source src="embedding_wavs_sisnrloss/5849-50964-0004-norm.wav" type="audio/mpeg"></audio></td>
+                  <td><audio controls><source src="embedding_wavs/5849-50964-0004-norm.wav" type="audio/mpeg"></audio></td>
                   <td><audio controls><source src="predictions_sisnrloss/5849-50964-0009-norm.wav" type="audio/mpeg"></audio></td>
+                  <td><audio controls><source src="predictions_tvcn_lite/5849-50964-0009-norm.wav" type="audio/mpeg"></audio></td>
+                  <td><audio controls><source src="predictions_tvcn/5849-50964-0009-norm.wav" type="audio/mpeg"></audio></td>
                 </tr>
                 <tr>		
                   <td > </th>
                   <td></td>
-                  <td><audio controls><source src="embedding_wavs_sisnrloss/6267-65525-0059-norm.wav" type="audio/mpeg"></audio></td>
+                  <td><audio controls><source src="embedding_wavs/6267-65525-0059-norm.wav" type="audio/mpeg"></audio></td>
                   <td><audio controls><source src="predictions_sisnrloss/6267-65525-0027-norm.wav" type="audio/mpeg"></audio></td>
+                  <td><audio controls><source src="predictions_tvcn_lite/6267-65525-0027-norm.wav" type="audio/mpeg"></audio></td>
+                  <td><audio controls><source src="predictions_tvcn/6267-65525-0027-norm.wav" type="audio/mpeg"></audio></td>
                 </tr>
                 <tr>		
                   <td > 3. </th>
                   <td><audio controls><source src="mixed/4831-18525-0005.3576-138058-0010-norm.wav" type="audio/mpeg"></audio></td>
-                  <td><audio controls><source src="embedding_wavs_sisnrloss/4831-18525-0016-norm.wav" type="audio/mpeg"></audio></td>
+                  <td><audio controls><source src="embedding_wavs/4831-18525-0016-norm.wav" type="audio/mpeg"></audio></td>
                   <td><audio controls><source src="predictions_sisnrloss/4831-18525-0005-norm.wav" type="audio/mpeg"></audio></td>
+                  <td><audio controls><source src="predictions_tvcn_lite/4831-18525-0005-norm.wav" type="audio/mpeg"></audio></td>
+                  <td><audio controls><source src="predictions_tvcn/4831-18525-0005-norm.wav" type="audio/mpeg"></audio></td>
                 </tr>
                 <tr>		
                   <td > </th>
                   <td></td>
-                  <td><audio controls><source src="embedding_wavs_sisnrloss/3576-138058-0014-norm.wav" type="audio/mpeg"></audio></td>
+                  <td><audio controls><source src="embedding_wavs/3576-138058-0014-norm.wav" type="audio/mpeg"></audio></td>
                   <td><audio controls><source src="predictions_sisnrloss/3576-138058-0010-norm.wav" type="audio/mpeg"></audio></td>
+                  <td><audio controls><source src="predictions_tvcn_lite/3576-138058-0010-norm.wav" type="audio/mpeg"></audio></td>
+                  <td><audio controls><source src="predictions_tvcn/3576-138058-0010-norm.wav" type="audio/mpeg"></audio></td>
                 </tr>
                 <tr>		
                   <td > 4. </th>
                   <td><audio controls><source src="mixed/6841-88291-0003.1585-157660-0013-norm.wav" type="audio/mpeg"></audio></td>
-                  <td><audio controls><source src="embedding_wavs_sisnrloss/6841-88291-0039-norm.wav" type="audio/mpeg"></audio></td>
+                  <td><audio controls><source src="embedding_wavs/6841-88291-0039-norm.wav" type="audio/mpeg"></audio></td>
                   <td><audio controls><source src="predictions_sisnrloss/6841-88291-0003-norm.wav" type="audio/mpeg"></audio></td>
+                  <td><audio controls><source src="predictions_tvcn_lite/6841-88291-0003-norm.wav" type="audio/mpeg"></audio></td>
+                  <td><audio controls><source src="predictions_tvcn/6841-88291-0003-norm.wav" type="audio/mpeg"></audio></td>
                 </tr>
                 <tr>		
                   <td > </th>
                   <td></td>
-                  <td><audio controls><source src="embedding_wavs_sisnrloss/1585-157660-0016-norm.wav" type="audio/mpeg"></audio></td>
+                  <td><audio controls><source src="embedding_wavs/1585-157660-0016-norm.wav" type="audio/mpeg"></audio></td>
                   <td><audio controls><source src="predictions_sisnrloss/1585-157660-0013-norm.wav" type="audio/mpeg"></audio></td>
+                  <td><audio controls><source src="predictions_tvcn_lite/1585-157660-0013-norm.wav" type="audio/mpeg"></audio></td>
+                  <td><audio controls><source src="predictions_tvcn/1585-157660-0013-norm.wav" type="audio/mpeg"></audio></td>
+                </tr>
+                <tr>		
+                  <td > 5. </th>
+                  <td><audio controls><source src="mixed/1701-141760-0023.251-136532-0023-norm.wav" type="audio/mpeg"></audio></td>
+                  <td><audio controls><source src="embedding_wavs/1701-141760-0033-norm.wav" type="audio/mpeg"></audio></td>
+                  <td><audio controls><source src="predictions_sisnrloss/1701-141760-0023-norm.wav" type="audio/mpeg"></audio></td>
+                  <td><audio controls><source src="predictions_tvcn_lite/1701-141760-0023-norm.wav" type="audio/mpeg"></audio></td>
+                  <td><audio controls><source src="predictions_tvcn/1701-141760-0023-norm.wav" type="audio/mpeg"></audio></td>
+                </tr>
+                <tr>		
+                  <td > </th>
+                  <td></td>
+                  <td><audio controls><source src="embedding_wavs/251-136532-0000-norm.wav" type="audio/mpeg"></audio></td>
+                  <td><audio controls><source src="predictions_sisnrloss/251-136532-0023-norm.wav" type="audio/mpeg"></audio></td>
+                  <td><audio controls><source src="predictions_tvcn_lite/251-136532-0023-norm.wav" type="audio/mpeg"></audio></td>
+                  <td><audio controls><source src="predictions_tvcn/251-136532-0023-norm.wav" type="audio/mpeg"></audio></td>
                 </tr>
           </tbody>
           </table>
