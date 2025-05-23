@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dynamic Layer Gating for Speech Enhancement</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 30px;
+            background-color: #f9f9f9;
+        }
+        h1 {
+            margin-bottom: 40px;
+        }
+        h2 {
+            margin-bottom: 40px;
+        }
+        .abstract {
+            max-width: 800px;
+            margin: 0 auto 40px auto;
+            font-size: 17px;
+            line-height: 1.6;
+            color: #444;
+            text-align: left;
+        }
+        .image-container {
+            margin-bottom: 40px;
+        }
+        img {
+            max-width: 50%;
+            height: auto;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+        }
+        .caption {
+            text-align: left;
+            max-width: 90%;
+            margin: 0 auto 20px auto;
+            margin-top: 10px;
+            font-size: 16px;
+            color: #555;
+        }
+.two-column-section {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    margin-bottom: 50px;
+    position: relative;
+}
+
+.column {
+    width: 48%;
+    padding: 0 20px;
+    box-sizing: border-box;
+}
+
+/* Central vertical line using a pseudo-element */
+.two-column-section::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    width: 1px;
+    background-color: #ccc;
+    transform: translateX(-50%);
+    z-index: 0;
+}
+
+.column h3 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #222;
+    position: relative;
+    z-index: 1;
+}
+
+.column img {
+    display: block;
+    margin: 0 auto 20px auto;
+    max-width: 100%;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    position: relative;
+    z-index: 1;
+}
+.audio-header-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+
+.column-title {
+  width: 250px;
+  text-align: center;
+  font-weight: bold;
+  margin: 0 10px;
+  color: #222;
+}
+.audio-row-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 30px;
+}
+
+.audio-row {
+  display: flex;
+  align-items: center;
+  width: 900px; /* Set total width of each row */
+}
+
+.row-title {
+  width: 300px; /* Fixed width ensures perfect alignment */
+  text-align: left;
+  font-weight: bold;
+  margin-right: 20px;
+  color: #333;
+}
+
+.audio-content {
+  display: flex;
+  gap: 20px;
+  flex: 1;
+}
+
+.audio-content.single {
+  justify-content: flex-start; /* Align single audio with others */
+}
+
+.audio-content audio {
+  width: 250px;
+  height: 30px;
+}
+
+
+
+    </style>
+</head>
+<body>
+
+    <h1>Dynamic Layer Gating for Speech Enhancement</h1>
+    
+    <div class="abstract">
+        <strong>Abstract:</strong> Conventional deep learning-based speech enhancement models perform inference with fixed network structure. However, due to the time-varying spectral characteristics of speech and noise, the noisy signal exhibits varying subband and segmental signal-to-noise ratios. Adapting the network structure to these variations may offer computational efficiency and interpretability. This work introduces two gating mechanisms, sample-level gating (SG) and time-frequency level gating (TFG), to dynamically skip layers within the two-stage conformer blocks of the conformer-based metric GAN network. Our experiments demonstrate competitive performance while reducing multiply-accumulate operations by 36% with SG and 48% with TFG. Furthermore, we provide insights into the model behavior by analyzing the gate activations and intermediate layer outputs. Our analysis shows that initial layers prioritize low-frequency speech regions, while later layers focus on nonspeech regions and higher frequencies.
+    </div>
+    <h2>1. Layer-Wise Metric Analysis</h2>
+
+    <div class="audio-header-wrapper">
+      <div class="audio-row">
+        <div class="row-title"></div> <!-- Empty to align with row titles -->
+        <div class="column-title">Baseline</div>
+        <div class="column-title">TFG Mechansim</div>
+      </div>
+    </div>
+
+  <div class="audio-row-wrapper">
+    <div class="audio-row">
+      <div class="row-title">Noisy Input</div>
+      <div class="audio-content">
+        <audio controls>
+          <source src="speech_samples/Baseline_Layer-wise/noisy.wav" type="audio/mpeg">
+        </audio>
+        <audio controls>
+          <source src="speech_samples/TFG_Layer-wise/noisy.wav" type="audio/mpeg">
+        </audio>
+      </div>
+    </div>
+  </div>
+
+  <div class="audio-row-wrapper">
+    <div class="audio-row">
+      <div class="row-title">Encoder Output</div>
+      <div class="audio-content">
+        <audio controls>
+          <source src="speech_samples/Baseline_Layer-wise/encoder.wav" type="audio/mpeg">
+        </audio>
+        <audio controls>
+          <source src="speech_samples/TFG_Layer-wise/encoder.wav" type="audio/mpeg">
+        </audio>
+      </div>
+    </div>
+  </div>
+
+  <div class="audio-row-wrapper">
+    <div class="audio-row">
+      <div class="row-title">Layer-1 (1st Time-Conformer)</div>
+      <div class="audio-content">
+        <audio controls>
+          <source src="speech_samples/Baseline_Layer-wise/layer1.wav" type="audio/mpeg">
+        </audio>
+        <audio controls>
+          <source src="speech_samples/TFG_Layer-wise/layer1.wav" type="audio/mpeg">
+        </audio>
+      </div>
+    </div>
+  </div>
+
+  <div class="audio-row-wrapper">
+    <div class="audio-row">
+      <div class="row-title">Layer-2 (1st Frequency-Conformer)</div>
+      <div class="audio-content">
+        <audio controls>
+          <source src="speech_samples/Baseline_Layer-wise/layer2.wav" type="audio/mpeg">
+        </audio>
+        <audio controls>
+          <source src="speech_samples/TFG_Layer-wise/layer2.wav" type="audio/mpeg">
+        </audio>
+      </div>
+    </div>
+  </div>
+
+  <div class="audio-row-wrapper">
+    <div class="audio-row">
+      <div class="row-title">Layer-3 (2nd Time-Conformer)</div>
+      <div class="audio-content">
+        <audio controls>
+          <source src="speech_samples/Baseline_Layer-wise/layer3.wav" type="audio/mpeg">
+        </audio>
+        <audio controls>
+          <source src="speech_samples/TFG_Layer-wise/layer3.wav" type="audio/mpeg">
+        </audio>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="audio-row-wrapper">
+    <div class="audio-row">
+      <div class="row-title">Layer-4 (2nd Frequency-Conformer)</div>
+      <div class="audio-content">
+        <audio controls>
+          <source src="speech_samples/Baseline_Layer-wise/layer4.wav" type="audio/mpeg">
+        </audio>
+        <audio controls>
+          <source src="speech_samples/TFG_Layer-wise/layer4.wav" type="audio/mpeg">
+        </audio>
+      </div>
+    </div>
+  </div>
+
+  <div class="audio-row-wrapper">
+    <div class="audio-row">
+      <div class="row-title">Layer-5 (3rd Time-Conformer)</div>
+      <div class="audio-content">
+        <audio controls>
+          <source src="speech_samples/Baseline_Layer-wise/layer5.wav" type="audio/mpeg">
+        </audio>
+        <audio controls>
+          <source src="speech_samples/TFG_Layer-wise/layer5.wav" type="audio/mpeg">
+        </audio>
+      </div>
+    </div>
+  </div>
+
+  <div class="audio-row-wrapper">
+    <div class="audio-row">
+      <div class="row-title">Layer-6 (3rd Frequency-Conformer)</div>
+      <div class="audio-content">
+        <audio controls>
+          <source src="speech_samples/Baseline_Layer-wise/layer6.wav" type="audio/mpeg">
+        </audio>
+        <audio controls>
+          <source src="speech_samples/TFG_Layer-wise/layer6.wav" type="audio/mpeg">
+        </audio>
+      </div>
+    </div>
+  </div>
+
+  <div class="audio-row-wrapper">
+    <div class="audio-row">
+      <div class="row-title">Layer-7 (4th Time-Conformer)</div>
+      <div class="audio-content">
+        <audio controls>
+          <source src="speech_samples/Baseline_Layer-wise/layer7.wav" type="audio/mpeg">
+        </audio>
+        <audio controls>
+          <source src="speech_samples/TFG_Layer-wise/layer7.wav" type="audio/mpeg">
+        </audio>
+      </div>
+    </div>
+  </div>
+
+  <div class="audio-row-wrapper">
+    <div class="audio-row">
+      <div class="row-title">Layer-8 (4th Frequency-Conformer)</div>
+      <div class="audio-content">
+        <audio controls>
+          <source src="speech_samples/Baseline_Layer-wise/layer8.wav" type="audio/mpeg">
+        </audio>
+        <audio controls>
+          <source src="speech_samples/TFG_Layer-wise/layer8.wav" type="audio/mpeg">
+        </audio>
+      </div>
+    </div>
+  </div>
+
+    <div class="two-column-section">
+        <div class="column">
+            <h3>Baseline</h3>
+            <img src="web_figures/layer_wise_metric_analysis_baseline.png" alt="Image 2">
+            <div class="caption">Figure 1: Quality metrics of intermediate layer outputs of baseline model. (a) Noisy spectrogram, (b) Encoder output fed directly to the decoder, Time-conformers in left column (c,e,g,i), frequency-conformers in right column(d,f,h,j). PQ--PESQ, CS--CSIG, CB--CBAK, CO--COVL, SNR--SegSNR</div>
+        </div>
+        <div class="column">
+            <h3>TFG Mechanism</h3>
+            <img src="web_figures/layer_wise_metric_analysis_tfg.png" alt="Image 3">
+            <div class="caption">Figure 2: Quality metrics of intermediate layer outputs with TFG mechanism, for the same signal shown in Figure 1. (a) Noisy spectrogram, (b) Encoder output fed directly to the decoder, Time-conformers in left column (a,c,e,g), frequency-conformers in right column(b,d,f,h). PQ--PESQ, CS--CSIG, CB--CBAK, CO--COVL, SNR--SegSNR</div>
+        </div>
+    </div>
+    
+    <h2>2. Gating Activations at different SNRs, Noises and Gender</h2>
+    <div class="two-column-section">
+        <div class="column">
+            <h3>Office Noise - 17.5 dB SNR - Male Speaker</h3>
+            <img src="web_figures/activations_male_office_17_5.png" alt="Left Figure 1">
+            <div class="caption">Figure 3a: Illustration of gate activations for male speaker utterance corrupted by office noise at 17.5 dB SNR. (a) Noisy Spectrogram (b) Output spectrogram obtained by skipping all the conformer layers (c) Time-gating (d) Frequency-gating</div>
+            <img src="web_figures/outputs_male_office_17_5.png" alt="Left Figure 2">
+            <div class="caption">Figure 3b: Illustration of the output magnitude spectrograms obtained by passing the intermediate layer outputs through decoder, for the same noisy segment shown in Figure~\ref{fig:act-17.5}. Time-conformer outputs in left column (a,c,e,g), and frequency-conformer outputs in right column (b, d, f, h)</div>
+        </div>
+        <div class="column">
+            <h3>Cafe Noise - 12.5 dB SNR - Male Speaker</h3>
+            <img src="web_figures/activations_male_cafe_12_5.png" alt="Right Figure 1">
+            <div class="caption">Figure 4a: Illustration of gate activations for male speaker utterance corrupted by cafe noise at 12.5 dB SNR. (a) Noisy Spectrogram (b) Output spectrogram obtained by skipping all the conformer layers (c) Time-gating (d) Frequency-gating</div>
+            <img src="web_figures/outputs_male_cafe_12_5.png" alt="Right Figure 2">
+            <div class="caption">Figure 4b: Illustration of the output magnitude spectrograms obtained by passing the intermediate layer outputs through decoder, for the same noisy segment shown in Figure~\ref{fig:act-12.5}. Time-conformer outputs in left column (a,c,e,g), and frequency-conformer outputs in right column (b, d, f, h)</div>
+        </div>
+    </div>
+    <div class="two-column-section">
+        <div class="column">
+            <h3>Public Square Noise - 7.5 dB SNR - Female Speaker</h3>
+            <img src="web_figures/activations_psquare_female_7_5.png" alt="Left Figure 1">
+            <div class="caption">Figure 5a: Illustration of gate activations for female speaker utterance corrupted by public square noise at 7.5 dB SNR. (a) Noisy Spectrogram (b) Output spectrogram obtained by skipping all the conformer layers (c) Time-gating (d) Frequency-gating</div>
+            <img src="web_figures/outputs_psquare_female_7_5.png" alt="Left Figure 2">
+            <div class="caption">Figure 5b: Illustration of the output magnitude spectrograms obtained by passing the intermediate layer outputs through decoder, for the same noisy segment shown in Figure~\ref{fig:act-7.5}. Time-conformer outputs in left column (a,c,e,g), and frequency-conformer outputs in right column (b, d, f, h)</div>
+        </div>
+        <div class="column">
+            <h3>Living Room Noise - 2.5 dB SNR - Female Speaker</h3>
+            <img src="web_figures/activations_living_female_2_5.png" alt="Right Figure 1">
+            <div class="caption">Figure 6a: Illustration of gate activations for female speaker utterance corrupted by living room noise at 2.5 dB SNR. (a) Noisy Spectrogram (b) Output spectrogram obtained by skipping all the conformer layers (c) Time-gating (d) Frequency-gating</div>
+            <img src="web_figures/outputs_living_female_2_5.png" alt="Right Figure 2">
+            <div class="caption">Figure 6b: Illustration of the output magnitude spectrograms obtained by passing the intermediate layer outputs through decoder, for the same noisy segment shown in Figure~\ref{fig:act-2.5}. Time-conformer outputs in left column (a,c,e,g), and frequency-conformer outputs in right column (b, d, f, h)</div>
+        </div>
+    </div>
+    
+    <h2>3. Noise and SNR-wise Activations of sample-level gating Mechanism</h2>
+    <div class="image-container">
+        <img src="web_figures/sample_gating_analysis.png" alt="Image 1">
+        <div class="caption">Figure 7: Noise and SNR-wise average execution rates of sample-level gating. Here L represents a two-stage conformer block (combination of time-conformer and frequency-conformer) and 'sum' represents total number of layers executed for each noise/SNR</div>
+    </div>    
+
+</body>
+</html>
+
