@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang='en'>
+<head>
+<meta charset='utf-8' />
+<meta name='viewport' content='width=device-width, initial-scale=1' />
+<title>TVCN UFL distinguishing samples</title>
+<style>
+
+        :root {
+            --bg: #0b1020;
+            --panel: #11182d;
+            --text: #eef2ff;
+            --muted: #a8b3cf;
+            --accent: #6ee7b7;
+            --accent-2: #60a5fa;
+            --border: rgba(255,255,255,0.10);
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            color: var(--text);
+            background:
+                radial-gradient(circle at top left, rgba(96,165,250,0.15), transparent 28%),
+                radial-gradient(circle at top right, rgba(110,231,183,0.12), transparent 24%),
+                linear-gradient(180deg, #060914, #0b1020 35%, #10172c 100%);
+        }
+        .wrap { max-width: 1500px; margin: 0 auto; padding: 32px 18px 48px; }
+        header {
+            background: linear-gradient(135deg, rgba(17,24,45,0.95), rgba(22,33,60,0.85));
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 24px 24px 20px;
+            box-shadow: 0 18px 40px rgba(0,0,0,0.25);
+            margin-bottom: 22px;
+        }
+        h1 { margin: 0 0 10px; font-size: 30px; line-height: 1.2; text-align: center; }
+        .authors { color: var(--text); font-size: 15px; font-weight: 600; margin: 4px 0 2px; text-align: center; }
+        .chips { display: flex; flex-wrap: wrap; gap: 10px; margin: 14px 0 4px; }
+        .chip {
+            padding: 7px 11px;
+            border-radius: 999px;
+            background: rgba(255,255,255,0.07);
+            border: 1px solid var(--border);
+            color: var(--text);
+            font-size: 12px;
+        }
+        .abstract { color: var(--muted); font-size: 13px; line-height: 1.75; margin-top: 14px; }
+        .abstract b { color: var(--text); }
+        .subtitle { color: var(--muted); font-size: 14px; line-height: 1.6; margin: 0 0 18px; }
+        .arch {
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 18px;
+            margin-bottom: 22px;
+            text-align: center;
+        }
+        .arch img { display: block; width: 100%; max-width: 980px; height: auto; margin: 0 auto; border-radius: 12px; }
+        .arch figcaption { color: #334155; font-size: 13px; margin-top: 10px; }
+        .sample {
+            background: linear-gradient(180deg, rgba(17,24,45,0.94), rgba(13,18,34,0.94));
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 18px;
+            margin-bottom: 18px;
+            box-shadow: 0 12px 28px rgba(0,0,0,0.16);
+        }
+        .sample h2 { margin: 0 0 8px; font-size: 20px; }
+        .spec {
+            width: 100%;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+            background: #ffffff;
+            margin-bottom: 14px;
+        }
+        .spec img { display: block; width: 100%; height: auto; }
+        .audio-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 12px;
+        }
+        .audio-card {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 10px 12px 12px;
+        }
+        .audio-card { text-align: center; }
+        .audio-card .name { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 6px; text-align: center; }
+        audio { width: 100%; }
+        .footer { color: var(--muted); font-size: 12px; margin-top: 18px; }
+        a { color: var(--accent-2); }
+        @media (max-width: 720px) {
+            .wrap { padding: 16px 12px 28px; }
+            h1 { font-size: 24px; }
+        }
+
+</style>
+</head>
+<body>
+<div class='wrap'>
+<header>
+<h1>UFL-GAN: A Multi-Discriminator GAN for Unsupervised Speech Enhancement</h1>
+<div class='authors'>Satvik Bejugam, Venkatesh Parvathala, K. Sri Rama Murty</div>
+<div class='abstract'><b>Abstract:</b> Most deep learning based speech enhancement methods are usually trained in a supervised fashion, i.e., they typically rely on parallel corpora of noisy and clean speech pairs. This is often difficult to obtain in real-world scenarios, leading to the use of synthetic data. In this work, we propose a novel unsupervised speech enhancement method that does not require paired training data. We introduce a multi-discriminator GAN-based architecture to capture global (or utterance-level) and local (or frame-level) characteristics of the speech signal. Additionally, we incorporate self-supervised representations from a pre-trained model to provide auxiliary information to the generator and thereby enhance the denoising capability. Our extensive experimental results on the VoiceBank+DEMAND dataset demonstrate that the proposed method achieves comparable or better performance across both intrusive and non-intrusive quality measures.</div>
+</header>
+<figure class='arch'>
+<img src='images/architecture.png' alt='UFL-GAN model architecture' />
+<figcaption>Architecture of the proposed UFL-GAN.</figcaption>
+</figure>
+<div class='subtitle'>Each example shows a spectrogram montage (Clean / Noisy / U / F / UF) above the corresponding audio. <b>U</b> uses an utterance-level discriminator, <b>F</b> a frame-level discriminator, and <b>UF</b>, the proposed approach, combines both.</div>
+<article class='sample'>
+<h2>1. p232_328.wav</h2>
+<div class='spec'>
+<img src='spectrograms/01_p232_328.wav_spectrogram.png' alt='Grayscale spectrogram montage for p232_328.wav' />
+</div>
+<div class='audio-grid'>
+<div class='audio-card'><div class='name'>Clean</div><audio controls preload='none' src='audio/01_p232_328.wav_clean.wav'></audio></div>
+<div class='audio-card'><div class='name'>Noisy</div><audio controls preload='none' src='audio/01_p232_328.wav_noisy.wav'></audio></div>
+<div class='audio-card'><div class='name'>U (utterance)</div><audio controls preload='none' src='audio/01_p232_328.wav_u.wav'></audio></div>
+<div class='audio-card'><div class='name'>F (frame)</div><audio controls preload='none' src='audio/01_p232_328.wav_f.wav'></audio></div>
+<div class='audio-card'><div class='name'>UF (proposed)</div><audio controls preload='none' src='audio/01_p232_328.wav_uf.wav'></audio></div>
+</div>
+</article>
+<article class='sample'>
+<h2>2. p232_190.wav</h2>
+<div class='spec'>
+<img src='spectrograms/02_p232_190.wav_spectrogram.png' alt='Grayscale spectrogram montage for p232_190.wav' />
+</div>
+<div class='audio-grid'>
+<div class='audio-card'><div class='name'>Clean</div><audio controls preload='none' src='audio/02_p232_190.wav_clean.wav'></audio></div>
+<div class='audio-card'><div class='name'>Noisy</div><audio controls preload='none' src='audio/02_p232_190.wav_noisy.wav'></audio></div>
+<div class='audio-card'><div class='name'>U (utterance)</div><audio controls preload='none' src='audio/02_p232_190.wav_u.wav'></audio></div>
+<div class='audio-card'><div class='name'>F (frame)</div><audio controls preload='none' src='audio/02_p232_190.wav_f.wav'></audio></div>
+<div class='audio-card'><div class='name'>UF (proposed)</div><audio controls preload='none' src='audio/02_p232_190.wav_uf.wav'></audio></div>
+</div>
+</article>
+<article class='sample'>
+<h2>3. p232_228.wav</h2>
+<div class='spec'>
+<img src='spectrograms/03_p232_228.wav_spectrogram.png' alt='Grayscale spectrogram montage for p232_228.wav' />
+</div>
+<div class='audio-grid'>
+<div class='audio-card'><div class='name'>Clean</div><audio controls preload='none' src='audio/03_p232_228.wav_clean.wav'></audio></div>
+<div class='audio-card'><div class='name'>Noisy</div><audio controls preload='none' src='audio/03_p232_228.wav_noisy.wav'></audio></div>
+<div class='audio-card'><div class='name'>U (utterance)</div><audio controls preload='none' src='audio/03_p232_228.wav_u.wav'></audio></div>
+<div class='audio-card'><div class='name'>F (frame)</div><audio controls preload='none' src='audio/03_p232_228.wav_f.wav'></audio></div>
+<div class='audio-card'><div class='name'>UF (proposed)</div><audio controls preload='none' src='audio/03_p232_228.wav_uf.wav'></audio></div>
+</div>
+</article>
+</div>
+</body></html>
