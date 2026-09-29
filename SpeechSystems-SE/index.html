@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang='en'>
+<head>
+<meta charset='utf-8' />
+<meta name='viewport' content='width=device-width, initial-scale=1' />
+<title>Speech Enhancement - Audio Examples</title>
+<script>
+window.MathJax = { tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] }, svg: { fontCache: 'global' } };
+</script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.min.js' async></script>
+<style>
+    :root {
+        --text: #111827;
+        --muted: #6b7280;
+        --border: #a3a8b3;
+    }
+    * { box-sizing: border-box; }
+    body {
+        margin: 0;
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        color: var(--text);
+        background: #ffffff;
+    }
+    .wrap { max-width: 1760px; margin: 0 auto; padding: 32px 18px 48px; }
+    header { text-align: center; padding: 8px 0 18px; margin-bottom: 18px; border-bottom: 1px solid var(--border); }
+    h1 { margin: 0; font-size: 30px; line-height: 1.2; }
+    h2.section { font-size: 24px; margin: 34px 0 6px; }
+    .formula { color: var(--muted); font-size: 15px; margin: 0 0 14px; }
+    .sample { border: 1px solid var(--border); border-radius: 16px; padding: 16px; margin-bottom: 18px; }
+    .sample h3 { margin: 0 0 6px; font-size: 19px; }
+    .sample .formula { font-size: 16px; color: var(--text); text-align: center; }
+    .spec { overflow: hidden; margin-bottom: 14px; }
+    .spec img { display: block; width: auto; max-width: 100%; height: auto; margin: 0 auto; }
+    .grid3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); gap: 16px; }
+    .grid3 .sample { margin-bottom: 0; }
+    .grid3 .sample h3 { text-align: center; }
+    .grid3 .spec img { width: 100%; }
+    .row { display: flex; flex-wrap: wrap; justify-content: center; gap: 14px; }
+    .panel { flex: 1 1 260px; max-width: 420px; border: 1px solid var(--border); border-radius: 12px; padding: 10px; text-align: center; }
+    .row.wide .panel { flex-basis: 380px; max-width: 560px; }
+    .panel .name { font-size: 14px; font-weight: 600; margin-bottom: 2px; }
+    .panel .score { font-size: 12px; color: var(--muted); margin-bottom: 6px; min-height: 15px; }
+    .panel .spec { margin-bottom: 8px; }
+    .panel .spec img { width: 100%; }
+    audio { width: 100%; }
+    @media (max-width: 720px) {
+        .wrap { padding: 16px 12px 28px; }
+        h1 { font-size: 24px; }
+        .grid3 { grid-template-columns: 1fr; }
+    }
+</style>
+</head>
+<body>
+<div class='wrap'>
+<header>
+<h1>Single-Channel Speech Enhancement</h1>
+</header>
+
+<!-- ============================================================ 1. DISTORTIONS -->
+<h2 class='section'>1. Distortions</h2>
+<div class='grid3'>
+<article class='sample'><h3>Clean</h3><div class='spec'><img src='images/distortions/clean.png' alt='Clean speech spectrogram' /></div><audio controls preload='none' src='audio/distortions/clean.wav'></audio></article>
+<article class='sample'><h3>Additive noise</h3><div class='spec'><img src='images/distortions/noisy.png' alt='Noisy speech spectrogram' /></div><audio controls preload='none' src='audio/distortions/noisy.wav'></audio></article>
+<article class='sample'><h3>Reverberation</h3><div class='spec'><img src='images/distortions/reverberant.png' alt='Reverberant speech spectrogram' /></div><audio controls preload='none' src='audio/distortions/reverberant.wav'></audio></article>
+<article class='sample'><h3>Bandwidth limitation</h3><div class='spec'><img src='images/distortions/bandlimited.png' alt='Band-limited speech spectrogram' /></div><audio controls preload='none' src='audio/distortions/bandlimited.wav'></audio></article>
+<article class='sample'><h3>Clipping</h3><div class='spec'><img src='images/distortions/clipped.png' alt='Clipped speech spectrogram' /></div><audio controls preload='none' src='audio/distortions/clipped.wav'></audio></article>
+<article class='sample'><h3>Competing speaker</h3><div class='spec'><img src='images/distortions/competing_speaker.png' alt='Speech with a competing speaker spectrogram' /></div><audio controls preload='none' src='audio/distortions/competing_speaker.wav'></audio></article>
+</div>
+
+<!-- ============================================================ 2. MASKS -->
+<h2 class='section'>2. Spectral masks</h2>
+
+<article class='sample'>
+<h3>Reference</h3>
+<div class='row'>
+<div class='panel'><div class='name'>Noisy</div><div class='score'>PESQ 1.13 &middot; SI-SDR 5.8 dB</div><div class='spec'><img src='images/masks/noisy.png' alt='Noisy' /></div><audio controls preload='none' src='audio/masks/noisy.wav'></audio></div>
+<div class='panel'><div class='name'>Clean</div><div class='score'>reference</div><div class='spec'><img src='images/masks/clean.png' alt='Clean' /></div><audio controls preload='none' src='audio/masks/clean.wav'></audio></div>
+</div>
+</article>
+<article class='sample'>
+<h3>Ideal Binary Mask (IBM)</h3>
+<div class='formula'>\(M[t,k] = \begin{cases} 1, & 10\log_{10}\dfrac{|D[t,k]|^2}{|V[t,k]|^2} > \mathrm{LC} \\ 0, & \text{otherwise} \end{cases}\)</div>
+<div class='row'>
+<div class='panel'><div class='name'>Mask, LC 0 dB</div><div class='score'></div><div class='spec'><img src='images/masks/ibm_mask.png' alt='Mask, LC 0 dB' /></div></div>
+<div class='panel'><div class='name'>Output, LC &minus;6 dB</div><div class='score'>PESQ 2.59 &middot; SI-SDR 11.5 dB</div><div class='spec'><img src='images/masks/ibm_m6.png' alt='Output, LC &minus;6 dB' /></div><audio controls preload='none' src='audio/masks/ibm_m6.wav'></audio></div>
+<div class='panel'><div class='name'>Output, LC 0 dB</div><div class='score'>PESQ 2.29 &middot; SI-SDR 12.9 dB</div><div class='spec'><img src='images/masks/ibm.png' alt='Output, LC 0 dB' /></div><audio controls preload='none' src='audio/masks/ibm.wav'></audio></div>
+<div class='panel'><div class='name'>Output, LC +6 dB</div><div class='score'>PESQ 1.66 &middot; SI-SDR 11.9 dB</div><div class='spec'><img src='images/masks/ibm_p6.png' alt='Output, LC +6 dB' /></div><audio controls preload='none' src='audio/masks/ibm_p6.wav'></audio></div>
+</div>
+</article>
+<article class='sample'>
+<h3>Ideal Ratio Mask (IRM)</h3>
+<div class='formula'>\(M[t,k] = \left(\dfrac{|D[t,k]|^2}{|D[t,k]|^2 + |V[t,k]|^2}\right)^{\alpha}\)</div>
+<div class='row'>
+<div class='panel'><div class='name'>Mask, &alpha; = 1</div><div class='score'></div><div class='spec'><img src='images/masks/irm_mask.png' alt='Mask, &alpha; = 1' /></div></div>
+<div class='panel'><div class='name'>Output, &alpha; = 1</div><div class='score'>PESQ 3.06 &middot; SI-SDR 13.3 dB</div><div class='spec'><img src='images/masks/irm.png' alt='Output, &alpha; = 1' /></div><audio controls preload='none' src='audio/masks/irm.wav'></audio></div>
+<div class='panel'><div class='name'>Mask, &alpha; = 1/2</div><div class='score'></div><div class='spec'><img src='images/masks/irm_sqrt_mask.png' alt='Mask, &alpha; = 1/2' /></div></div>
+<div class='panel'><div class='name'>Output, &alpha; = 1/2</div><div class='score'>PESQ 3.15 &middot; SI-SDR 12.2 dB</div><div class='spec'><img src='images/masks/irm_sqrt.png' alt='Output, &alpha; = 1/2' /></div><audio controls preload='none' src='audio/masks/irm_sqrt.wav'></audio></div>
+</div>
+</article>
+<article class='sample'>
+<h3>Spectral Magnitude Mask (SMM)</h3>
+<div class='formula'>\(M[t,k] = \dfrac{|D[t,k]|}{|X[t,k]|}\)</div>
+<div class='row'>
+<div class='panel'><div class='name'>Mask, unbounded (0 to 2)</div><div class='score'></div><div class='spec'><img src='images/masks/smm_full_mask.png' alt='Mask, unbounded (0 to 2)' /></div></div>
+<div class='panel'><div class='name'>Output, unbounded</div><div class='score'>PESQ 3.36 &middot; SI-SDR 14.1 dB</div><div class='spec'><img src='images/masks/smm_full.png' alt='Output, unbounded' /></div><audio controls preload='none' src='audio/masks/smm_full.wav'></audio></div>
+<div class='panel'><div class='name'>Mask, clipped to [0, 1]</div><div class='score'></div><div class='spec'><img src='images/masks/smm_mask.png' alt='Mask, clipped to [0, 1]' /></div></div>
+<div class='panel'><div class='name'>Output, clipped</div><div class='score'>PESQ 3.27 &middot; SI-SDR 13.0 dB</div><div class='spec'><img src='images/masks/smm.png' alt='Output, clipped' /></div><audio controls preload='none' src='audio/masks/smm.wav'></audio></div>
+</div>
+</article>
+<article class='sample'>
+<h3>Phase Sensitive Mask (PSM)</h3>
+<div class='formula'>\(M[t,k] = \dfrac{|D[t,k]|}{|X[t,k]|}\cos\theta, \qquad \theta = \angle D[t,k] - \angle X[t,k]\)</div>
+<div class='row'>
+<div class='panel'><div class='name'>cos &theta;</div><div class='score'></div><div class='spec'><img src='images/masks/cos_theta.png' alt='cos &theta;' /></div></div>
+<div class='panel'><div class='name'>Mask, unclipped</div><div class='score'></div><div class='spec'><img src='images/masks/psm_full_mask.png' alt='Mask, unclipped' /></div></div>
+<div class='panel'><div class='name'>Output, unclipped</div><div class='score'>PESQ 3.72 &middot; SI-SDR 16.4 dB</div><div class='spec'><img src='images/masks/psm_full.png' alt='Output, unclipped' /></div><audio controls preload='none' src='audio/masks/psm_full.wav'></audio></div>
+<div class='panel'><div class='name'>Mask, truncated to [0, 1]</div><div class='score'></div><div class='spec'><img src='images/masks/psm_mask.png' alt='Mask, truncated to [0, 1]' /></div></div>
+<div class='panel'><div class='name'>Output, truncated</div><div class='score'>PESQ 3.33 &middot; SI-SDR 14.3 dB</div><div class='spec'><img src='images/masks/psm.png' alt='Output, truncated' /></div><audio controls preload='none' src='audio/masks/psm.wav'></audio></div>
+</div>
+</article>
+<article class='sample'>
+<h3>Complex Ideal Ratio Mask (cIRM)</h3>
+<div class='formula'>\(M[t,k] = \dfrac{D[t,k]}{X[t,k]}\)</div>
+<div class='row'>
+<div class='panel'><div class='name'>Real part (compressed)</div><div class='score'></div><div class='spec'><img src='images/masks/cirm_real.png' alt='Real part (compressed)' /></div></div>
+<div class='panel'><div class='name'>Imaginary part (compressed)</div><div class='score'></div><div class='spec'><img src='images/masks/cirm_imag.png' alt='Imaginary part (compressed)' /></div></div>
+<div class='panel'><div class='name'>Output, |M| &le; 1</div><div class='score'>PESQ 4.40 &middot; SI-SDR 22.5 dB</div><div class='spec'><img src='images/masks/cirm_b.png' alt='Output, |M| &le; 1' /></div><audio controls preload='none' src='audio/masks/cirm_b.wav'></audio></div>
+<div class='panel'><div class='name'>Output, exact</div><div class='score'>PESQ 4.64 &middot; SI-SDR &infin;</div><div class='spec'><img src='images/masks/cirm.png' alt='Output, exact' /></div><audio controls preload='none' src='audio/masks/cirm.wav'></audio></div>
+</div>
+</article>
+
+<!-- ============================================================ 3. ENHANCEMENT -->
+<h2 class='section'>3. Enhancement (CMGAN)</h2>
+
+<article class='sample'>
+<h3>Additive noise, SNR &minus;1.8 dB</h3>
+<div class='row wide'>
+<div class='panel'><div class='name'>Noisy</div><div class='score'>PESQ 1.17</div><div class='spec'><img src='images/enhancement/wham1_noisy.png' alt='Noisy' /></div><audio controls preload='none' src='audio/enhancement/wham1_noisy.wav'></audio></div>
+<div class='panel'><div class='name'>Enhanced</div><div class='score'>PESQ 3.36</div><div class='spec'><img src='images/enhancement/wham1_enhanced.png' alt='Enhanced' /></div><audio controls preload='none' src='audio/enhancement/wham1_enhanced.wav'></audio></div>
+<div class='panel'><div class='name'>Clean</div><div class='score'>reference</div><div class='spec'><img src='images/enhancement/wham1_clean.png' alt='Clean' /></div><audio controls preload='none' src='audio/enhancement/wham1_clean.wav'></audio></div>
+</div>
+</article>
+<article class='sample'>
+<h3>Additive noise, SNR &minus;0.8 dB</h3>
+<div class='row wide'>
+<div class='panel'><div class='name'>Noisy</div><div class='score'>PESQ 1.09</div><div class='spec'><img src='images/enhancement/wham2_noisy.png' alt='Noisy' /></div><audio controls preload='none' src='audio/enhancement/wham2_noisy.wav'></audio></div>
+<div class='panel'><div class='name'>Enhanced</div><div class='score'>PESQ 3.18</div><div class='spec'><img src='images/enhancement/wham2_enhanced.png' alt='Enhanced' /></div><audio controls preload='none' src='audio/enhancement/wham2_enhanced.wav'></audio></div>
+<div class='panel'><div class='name'>Clean</div><div class='score'>reference</div><div class='spec'><img src='images/enhancement/wham2_clean.png' alt='Clean' /></div><audio controls preload='none' src='audio/enhancement/wham2_clean.wav'></audio></div>
+</div>
+</article>
+<article class='sample'>
+<h3>Reverberation, RT60 1.66 s</h3>
+<div class='row wide'>
+<div class='panel'><div class='name'>Reverberant</div><div class='score'>PESQ 1.23</div><div class='spec'><img src='images/enhancement/reverb1_reverberant.png' alt='Reverberant' /></div><audio controls preload='none' src='audio/enhancement/reverb1_reverberant.wav'></audio></div>
+<div class='panel'><div class='name'>Enhanced</div><div class='score'>PESQ 3.00</div><div class='spec'><img src='images/enhancement/reverb1_enhanced.png' alt='Enhanced' /></div><audio controls preload='none' src='audio/enhancement/reverb1_enhanced.wav'></audio></div>
+<div class='panel'><div class='name'>Clean</div><div class='score'>reference</div><div class='spec'><img src='images/enhancement/reverb1_clean.png' alt='Clean' /></div><audio controls preload='none' src='audio/enhancement/reverb1_clean.wav'></audio></div>
+</div>
+</article>
+
+</div>
+</body>
+</html>
