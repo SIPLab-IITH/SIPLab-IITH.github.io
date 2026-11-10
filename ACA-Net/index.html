@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ACA-Net: Attention Maps of CMGAN and MP-SENet</title>
+<style>
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 30px 16px 60px;
+    background-color: #f9f9f9;
+    color: #222;
+}
+.page {
+    max-width: 1240px;
+    margin: 0 auto;
+}
+h1 {
+    text-align: center;
+    font-size: 28px;
+    margin: 0 0 10px;
+}
+.sub-header {
+    text-align: center;
+    color: #555;
+    margin-bottom: 30px;
+}
+.sub-header h3 {
+    margin: 0 0 6px;
+    font-weight: normal;
+}
+.sub-header p {
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.5;
+}
+.sub-header .authors {
+    color: #000;
+}
+.viewer {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 20px 20px 24px;
+    margin: 0 auto;
+}
+.controls {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 14px 24px;
+    margin-bottom: 18px;
+}
+.control-label {
+    font-size: 13px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #666;
+    margin-bottom: 6px;
+}
+.segmented {
+    display: inline-flex;
+    flex-wrap: wrap;
+    border: 1px solid #bbb;
+    border-radius: 7px;
+    overflow: hidden;
+}
+.segmented button {
+    font: inherit;
+    font-size: 15px;
+    padding: 7px 14px;
+    border: 0;
+    border-right: 1px solid #bbb;
+    background: #fff;
+    color: #333;
+    cursor: pointer;
+}
+.segmented button:last-child {
+    border-right: 0;
+}
+.segmented button:hover {
+    background: #f0f0f0;
+}
+.segmented button[aria-pressed="true"] {
+    background: #3b2a5c;
+    color: #fff;
+}
+.segmented button:focus-visible,
+input[type="range"]:focus-visible {
+    outline: 3px solid #e0a040;
+    outline-offset: 2px;
+}
+.slider-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+.slider-row input[type="range"] {
+    width: 340px;
+    max-width: 60%;
+    accent-color: #3b2a5c;
+}
+.slider-value {
+    font-size: 15px;
+    min-width: 150px;
+    font-variant-numeric: tabular-nums;
+    color: #333;
+}
+.figure-title {
+    font-size: 17px;
+    font-weight: bold;
+    margin: 18px 0 8px;
+}
+.panels {
+    display: grid;
+    gap: 6px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 8px 8px 4px;
+    position: relative;
+}
+.panels.spec {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) 64px;
+}
+.panels.maps {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) 64px;
+}
+.panels.ctx {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) 64px;
+}
+.panels.ctx .colorbar {
+    grid-column: 4;
+    grid-row: 1 / span 2;
+}
+h2.section {
+    font-size: 21px;
+    margin: 0 0 12px;
+}
+h2.section.second {
+    margin-top: 40px;
+}
+.panels canvas {
+    display: block;
+    width: 100%;
+}
+.status {
+    position: absolute;
+    top: 8px;
+    right: 12px;
+    font-size: 13px;
+    color: #888;
+}
+footer {
+    text-align: center;
+    margin-top: 40px;
+    font-size: 14px;
+    color: #777;
+}
+@media (max-width: 760px) {
+    .panels.spec {
+        grid-template-columns: minmax(0, 1fr);
+    }
+    .panels.maps {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .panels.maps .colorbar {
+        grid-column: 1 / -1;
+    }
+    .panels.ctx {
+        grid-template-columns: minmax(0, 1fr);
+    }
+    .panels.ctx .colorbar {
+        grid-column: 1;
+        grid-row: auto;
+    }
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+<h1>Adaptive Context Aggregation With Linear Complexity for Dual-Path Speech Enhancement</h1>
+<div class="sub-header">
+    <h3>(Supplementary Material)</h3>
+    <p><span class="authors">Venkatesh Parvathala, Sri Rama Murty Kodukula</span><br>
+    Speech Information Processing Lab, Department of Electrical Engineering, IIT Hyderabad</p>
+</div>
+
+<h2 class="section">Attention maps of CMGAN and MP-SENet</h2>
+<div class="viewer" id="attn-viewer">
+    <div class="controls">
+        <div>
+            <div class="control-label" id="lbl-model">Model</div>
+            <div class="segmented" role="group" aria-labelledby="lbl-model" data-key="model"></div>
+        </div>
+        <div>
+            <div class="control-label" id="lbl-block">Layer (dual-path block)</div>
+            <div class="segmented" role="group" aria-labelledby="lbl-block" data-key="block"></div>
+        </div>
+        <div>
+            <div class="control-label" id="lbl-axis">Attention</div>
+            <div class="segmented" role="group" aria-labelledby="lbl-axis" data-key="axis"></div>
+        </div>
+    </div>
+    <div>
+        <div class="control-label" id="lbl-pos"></div>
+        <div class="slider-row">
+            <input type="range" id="pos" min="0" max="100" step="1" value="25" aria-labelledby="lbl-pos">
+            <span class="slider-value" id="pos-value"></span>
+        </div>
+    </div>
+
+    <div class="figure-title">Spectrograms</div>
+    <div class="panels spec" id="spec-panels">
+        <canvas aria-label="Noisy spectrogram"></canvas>
+        <canvas aria-label="Clean spectrogram"></canvas>
+        <canvas aria-label="Enhanced spectrogram"></canvas>
+    </div>
+
+    <div class="figure-title">Attention Maps</div>
+    <div class="panels maps" id="map-panels">
+        <canvas></canvas><canvas></canvas><canvas></canvas><canvas></canvas>
+        <canvas class="colorbar" aria-label="Color scale: attention relative to uniform, 1/8 to 8"></canvas>
+        <span class="status" id="status" aria-live="polite"></span>
+    </div>
+</div>
+
+<h2 class="section second">Context-selection weights of ACA-Net</h2>
+<div class="viewer" id="aca-viewer">
+    <div class="controls">
+        <div>
+            <div class="control-label" id="lbl-aca-model">Model</div>
+            <div class="segmented" role="group" aria-labelledby="lbl-aca-model" data-aca-key="model"></div>
+        </div>
+        <div>
+            <div class="control-label" id="lbl-aca-block">Layer (block)</div>
+            <div class="segmented" role="group" aria-labelledby="lbl-aca-block" data-aca-key="block"></div>
+        </div>
+        <div>
+            <div class="control-label" id="lbl-aca-axis">Context selection</div>
+            <div class="segmented" role="group" aria-labelledby="lbl-aca-axis" data-aca-key="axis"></div>
+        </div>
+    </div>
+
+    <div class="figure-title">Spectrograms</div>
+    <div class="panels spec" id="aca-spec-panels">
+        <canvas aria-label="Noisy spectrogram"></canvas>
+        <canvas aria-label="Clean spectrogram"></canvas>
+        <canvas aria-label="ACA-Net-enhanced spectrogram"></canvas>
+    </div>
+
+    <div class="figure-title">Context Selection Weights</div>
+    <div class="panels ctx" id="aca-panels">
+        <canvas></canvas><canvas></canvas><canvas></canvas>
+        <canvas class="colorbar" aria-label="Color scale: context-selection weight, 0 to 1"></canvas>
+        <canvas></canvas><canvas></canvas><canvas></canvas>
+        <span class="status" id="aca-status" aria-live="polite"></span>
+    </div>
+</div>
+
+<footer>Speech Information Processing Lab, IIT Hyderabad</footer>
+</div>
+
+<script src="data/meta.js"></script>
+<script>
+(function () {
+    "use strict";
+    var MAGMA_HEX = "00000401000501010601010802010902020b02020d03030f03031204041405041606051806051a07061c08071e0907200a08220b09240c09260d0a290e0b2b100b2d110c2f120d31130d34140e36150e38160f3b180f3d19103f1a10421c10441d11471e114920114b21114e22115024125325125527125829115a2a115c2c115f2d11612f116331116533106734106936106b38106c390f6e3b0f703d0f713f0f72400f74420f75440f764510774710784910784a10794c117a4e117b4f127b51127c52137c54137d56147d57157e59157e5a167e5c167f5d177f5f187f601880621980641a80651a80671b80681c816a1c816b1d816d1d816e1e81701f81721f817320817521817621817822817922827b23827c23827e24828025828125818326818426818627818827818928818b29818c29818e2a81902a81912b81932b80942c80962c80982d80992d809b2e7f9c2e7f9e2f7fa02f7fa1307ea3307ea5317ea6317da8327daa337dab337cad347cae347bb0357bb2357bb3367ab5367ab73779b83779ba3878bc3978bd3977bf3a77c03a76c23b75c43c75c53c74c73d73c83e73ca3e72cc3f71cd4071cf4070d0416fd2426fd3436ed5446dd6456cd8456cd9466bdb476adc4869de4968df4a68e04c67e24d66e34e65e44f64e55064e75263e85362e95462ea5661eb5760ec5860ed5a5fee5b5eef5d5ef05f5ef1605df2625df2645cf3655cf4675cf4695cf56b5cf66c5cf66e5cf7705cf7725cf8745cf8765cf9785df9795df97b5dfa7d5efa7f5efa815ffb835ffb8560fb8761fc8961fc8a62fc8c63fc8e64fc9065fd9266fd9467fd9668fd9869fd9a6afd9b6bfe9d6cfe9f6dfea16efea36ffea571fea772fea973feaa74feac76feae77feb078feb27afeb47bfeb67cfeb77efeb97ffebb81febd82febf84fec185fec287fec488fec68afec88cfeca8dfecc8ffecd90fecf92fed194fed395fed597fed799fed89afdda9cfddc9efddea0fde0a1fde2a3fde3a5fde5a7fde7a9fde9aafdebacfcecaefceeb0fcf0b2fcf2b4fcf4b6fcf6b8fcf7b9fcf9bbfcfbbdfcfdbf";
+    var LUT = new Uint8Array(768);
+    for (var i = 0; i < 256; i++) {
+        for (var c = 0; c < 3; c++) LUT[3 * i + c] = parseInt(MAGMA_HEX.substr(6 * i + 2 * c, 2), 16);
+    }
+    var MODELS = [["cmgan", "CMGAN"], ["mpsenet", "MP-SENet"]];
+    var BLOCKS = [["1", "1"], ["2", "2"], ["3", "3"], ["4", "4"]];
+    var AXES = [["time", "Time"], ["freq", "Frequency"]];
+    var DEFAULT_POS = {time: 25, freq: 143};       // the row and frame of Fig. 7
+    var meta = window.ACA_META || null;
+    var state = {model: "cmgan", block: "2", axis: "time", pos: 25};
+    var cache = {};
+    var renderToken = 0;
+
+    // ------------------------------------------------------------------ data
+
+    function loadImage(url) {
+        if (!cache[url]) {
+            cache[url] = new Promise(function (resolve, reject) {
+                var img = new Image();
+                img.onload = function () { resolve(img); };
+                img.onerror = function () { delete cache[url]; reject(new Error("cannot load " + url)); };
+                img.src = url;
+            });
+        }
+        return cache[url];
+    }
+
+    // ------------------------------------------------------------------ drawing
+
+    var PAD = {l: 46, r: 8, t: 22, b: 40};
+
+    function setup(canvas, aspect) {
+        var dpr = window.devicePixelRatio || 1;
+        var w = canvas.clientWidth || canvas.parentNode.clientWidth;
+        var h = Math.round((w - PAD.l - PAD.r) * aspect) + PAD.t + PAD.b;
+        canvas.style.height = h + "px";
+        canvas.width = Math.round(w * dpr);
+        canvas.height = Math.round(h * dpr);
+        var ctx = canvas.getContext("2d");
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        ctx.clearRect(0, 0, w, h);
+        return {ctx: ctx, w: w, h: h, pw: w - PAD.l - PAD.r, ph: h - PAD.t - PAD.b};
+    }
+
+    function ticks(lo, hi, step) {
+        var t = [];
+        for (var v = Math.ceil(lo / step) * step; v <= hi + 1e-9; v += step) t.push(Math.round(v * 1000) / 1000);
+        return t;
+    }
+
+    // src: {img, x, y, w, h}, a rectangle of a map image whose row 0 (lowest frequency,
+    // first query) is drawn at the bottom; ext: [x0, x1, y0, y1] in axis units
+    function panel(canvas, src, ext, o) {
+        var g = setup(canvas, o.aspect);
+        var ctx = g.ctx;
+        ctx.imageSmoothingEnabled = false;
+        ctx.save();
+        ctx.translate(PAD.l, PAD.t + g.ph);
+        ctx.scale(1, -1);
+        ctx.drawImage(src.img, src.x, src.y, src.w, src.h, 0, 0, g.pw, g.ph);
+        ctx.restore();
+        var sx = function (x) { return PAD.l + (x - ext[0]) / (ext[1] - ext[0]) * g.pw; };
+        var sy = function (y) { return PAD.t + g.ph - (y - ext[2]) / (ext[3] - ext[2]) * g.ph; };
+        if (o.marker) {
+            ctx.save();
+            ctx.strokeStyle = "#fff";
+            ctx.lineWidth = 1.2;
+            ctx.setLineDash([5, 4]);
+            ctx.beginPath();
+            if (o.marker.x !== undefined) {
+                ctx.moveTo(sx(o.marker.x), PAD.t);
+                ctx.lineTo(sx(o.marker.x), PAD.t + g.ph);
+            } else {
+                ctx.moveTo(PAD.l, sy(o.marker.y));
+                ctx.lineTo(PAD.l + g.pw, sy(o.marker.y));
+            }
+            ctx.stroke();
+            ctx.restore();
+        }
+        ctx.strokeStyle = "#444";
+        ctx.lineWidth = 1;
+        ctx.strokeRect(PAD.l + 0.5, PAD.t + 0.5, g.pw - 1, g.ph - 1);
+        ctx.fillStyle = "#222";
+        ctx.font = "11px Arial, sans-serif";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "top";
+        ticks(ext[0], ext[1], o.xstep).forEach(function (v) {
+            var x = sx(v);
+            ctx.beginPath(); ctx.moveTo(x, PAD.t + g.ph); ctx.lineTo(x, PAD.t + g.ph + 4); ctx.stroke();
+            ctx.fillText(String(v), x, PAD.t + g.ph + 6);
+        });
+        ctx.textAlign = "right";
+        ctx.textBaseline = "middle";
+        ticks(ext[2], ext[3], o.ystep).forEach(function (v) {
+            var y = sy(v);
+            ctx.beginPath(); ctx.moveTo(PAD.l, y); ctx.lineTo(PAD.l - 4, y); ctx.stroke();
+            ctx.fillText(String(v), PAD.l - 6, y);
+        });
+        ctx.font = "13px Arial, sans-serif";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "bottom";
+        ctx.fillText(o.xlabel, PAD.l + g.pw / 2, g.h - 2);
+        ctx.textBaseline = "alphabetic";
+        ctx.fillText(o.title, PAD.l + g.pw / 2, PAD.t - 6);
+        if (o.ylabel) {
+            ctx.save();
+            ctx.translate(12, PAD.t + g.ph / 2);
+            ctx.rotate(-Math.PI / 2);
+            ctx.textBaseline = "middle";
+            ctx.fillText(o.ylabel, 0, 0);
+            ctx.restore();
+        }
+    }
+
+    // ticks: [[fraction of the scale, label], ...]
+    function colorbar(canvas, height, ticksList, title) {
+        var dpr = window.devicePixelRatio || 1;
+        var w = canvas.clientWidth || 64;
+        canvas.style.height = height + "px";
+        canvas.width = Math.round(w * dpr);
+        canvas.height = Math.round(height * dpr);
+        var ctx = canvas.getContext("2d");
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        ctx.clearRect(0, 0, w, height);
+        var x0 = 4, bw = 12, y0 = PAD.t, bh = height - PAD.t - PAD.b;
+        for (var i = 0; i < bh; i++) {
+            var v = Math.round((1 - i / (bh - 1)) * 255);
+            ctx.fillStyle = "rgb(" + LUT[3 * v] + "," + LUT[3 * v + 1] + "," + LUT[3 * v + 2] + ")";
+            ctx.fillRect(x0, y0 + i, bw, 1);
+        }
+        ctx.strokeStyle = "#444";
+        ctx.strokeRect(x0 + 0.5, y0 + 0.5, bw - 1, bh - 1);
+        ctx.fillStyle = "#222";
+        ctx.font = "11px Arial, sans-serif";
+        ctx.textAlign = "left";
+        ctx.textBaseline = "middle";
+        ticksList.forEach(function (t) {
+            var y = y0 + bh - t[0] * bh;
+            ctx.beginPath(); ctx.moveTo(x0 + bw, y); ctx.lineTo(x0 + bw + 3, y); ctx.stroke();
+            ctx.fillText(t[1], x0 + bw + 5, y);
+        });
+        ctx.save();
+        ctx.translate(w - 8, y0 + bh / 2);
+        ctx.rotate(-Math.PI / 2);
+        ctx.textAlign = "center";
+        ctx.font = "12px Arial, sans-serif";
+        ctx.fillText(title, 0, 0);
+        ctx.restore();
+    }
+
+    // ------------------------------------------------------------------ view
+
+    function positions(model, axis) {
+        var m = meta.models[model];
+        var a = axis === "time"
+            ? {n: m.time.rows, step: m.time.row_step, off: m.time.row_offset}
+            : {n: m.freq.frames, step: m.freq.frame_step, off: m.freq.frame_offset};
+        a.count = Math.floor((a.n - 1 - a.off) / a.step) + 1;
+        return a;
+    }
+
+    function nearestIndex(model, axis, pos) {
+        var a = positions(model, axis);
+        return Math.max(0, Math.min(a.count - 1, Math.round((pos - a.off) / a.step)));
+    }
+
+    function posText() {
+        if (state.axis === "time") {
+            return (state.pos * meta.bin_khz).toFixed(2) + " kHz (row " + state.pos + ")";
+        }
+        return (state.pos * meta.hop_s).toFixed(3) + " s (frame " + state.pos + ")";
+    }
+
+    function renderControls() {
+        var opts = {model: MODELS, block: BLOCKS, axis: AXES};
+        document.querySelectorAll("#attn-viewer .segmented").forEach(function (group) {
+            var key = group.getAttribute("data-key");
+            group.innerHTML = "";
+            opts[key].forEach(function (opt) {
+                var b = document.createElement("button");
+                b.type = "button";
+                b.textContent = opt[1];
+                b.setAttribute("aria-pressed", String(state[key] === opt[0]));
+                b.addEventListener("click", function () { select(key, opt[0]); });
+                group.appendChild(b);
+            });
+        });
+        var m = meta.models[state.model];
+        var slider = document.getElementById("pos");
+        var a = positions(state.model, state.axis);
+        slider.max = a.count - 1;
+        slider.value = (state.pos - a.off) / a.step;
+        document.getElementById("lbl-pos").textContent =
+            state.axis === "time" ? "Frequency of the time attention maps" : "Time of the frequency attention maps";
+        document.getElementById("pos-value").textContent = posText();
+    }
+
+    function render() {
+        var token = ++renderToken;
+        var m = meta.models[state.model];
+        var base = "data/" + state.model + "/";
+        var status = document.getElementById("status");
+        status.textContent = "loading…";
+        var mapUrl = state.axis === "time"
+            ? base + "time_b" + state.block + "_r" + state.pos + ".png"
+            : base + "freq_b" + state.block + "_c" + Math.floor(freqIndex() / meta.chunk) + ".png";
+        Promise.all([loadImage(base + "spec.png"), loadImage(mapUrl)]).then(function (res) {
+            if (token !== renderToken) return;
+            var spec = res[0], maps = res[1];
+            // spectrograms
+            var sb = m.spec.bins, sf = m.spec.frames;
+            var specExt = [0, sf * meta.hop_s, 0, 8];
+            var marker = state.axis === "time" ? {y: state.pos * meta.bin_khz} : {x: state.pos * meta.hop_s};
+            var sc = document.querySelectorAll("#spec-panels canvas");
+            ["Noisy", "Clean", "Enhanced"].forEach(function (name, k) {
+                panel(sc[k], {img: spec, x: 0, y: k * sb, w: sf, h: sb}, specExt,
+                      {aspect: 0.5, xstep: 1, ystep: 2, xlabel: "Time (s)", ylabel: k === 0 ? "Frequency (kHz)" : "",
+                       title: name, marker: marker});
+            });
+            // attention maps
+            var mc = document.querySelectorAll("#map-panels canvas");
+            var H = m.heads, ext, side, y0, xlab, ylab, step;
+            if (state.axis === "time") {
+                side = maps.naturalHeight;
+                y0 = 0;
+                var te = m.time.shown_frames * meta.hop_s;
+                ext = [0, te, 0, te];
+                xlab = "Key (s)"; ylab = "Query (s)"; step = 1;
+            } else {
+                side = m.freq.bins;
+                y0 = (freqIndex() % meta.chunk) * side;
+                var fe = side * meta.bin_khz;
+                ext = [0, fe, 0, fe];
+                xlab = "Key (kHz)"; ylab = "Query (kHz)"; step = 2;
+            }
+            for (var h = 0; h < H; h++) {
+                var tag = state.axis + "/b" + state.block + "/h" + (h + 1);
+                var paper = state.model === "cmgan" && meta.paper_panels[tag];
+                panel(mc[h], {img: maps, x: h * side, y: y0, w: side, h: side}, ext,
+                      {aspect: 1, xstep: step, ystep: step, xlabel: xlab, ylabel: h === 0 ? ylab : "",
+                       title: "Head " + (h + 1) + (paper ? "   [Fig. 7(" + paper + ")]" : "")});
+            }
+            colorbar(mc[H], parseFloat(mc[0].style.height),
+                     ["1/8", "1/4", "1/2", "1", "2", "4", "8"].map(function (l, k) { return [k / 6, l]; }),
+                     "attention / uniform");
+            status.textContent = "";
+        }).catch(function (e) {
+            if (token === renderToken) status.textContent = e.message;
+        });
+        var hash = "#" + [state.model, state.block, state.axis, state.pos].join("/");
+        if (location.hash !== hash) history.replaceState(null, "", hash);
+    }
+
+    function freqIndex() {
+        var a = positions(state.model, "freq");
+        return (state.pos - a.off) / a.step;
+    }
+
+    function snap() {
+        var a = positions(state.model, state.axis);
+        state.pos = a.off + a.step * nearestIndex(state.model, state.axis, state.pos);
+    }
+
+    function select(key, value) {
+        state[key] = value;
+        if (key === "axis") state.pos = DEFAULT_POS[value];
+        snap();
+        renderControls();
+        render();
+    }
+
+    function readHash() {
+        var p = location.hash.replace(/^#/, "").split("/");
+        if (p.length !== 4 || !meta.models[p[0]] || !/^[1-4]$/.test(p[1]) || (p[2] !== "time" && p[2] !== "freq")) return;
+        var m = meta.models[p[0]];
+        var pos = parseInt(p[3], 10);
+        var max = p[2] === "time" ? m.time.rows - 1 : m.freq.frames - 1;
+        if (!(pos >= 0 && pos <= max)) return;
+        state = {model: p[0], block: p[1], axis: p[2], pos: pos};
+        snap();
+    }
+
+    document.getElementById("pos").addEventListener("input", function (e) {
+        var a = positions(state.model, state.axis);
+        state.pos = a.off + a.step * parseInt(e.target.value, 10);
+        document.getElementById("pos-value").textContent = posText();
+        render();
+    });
+    var resizeTimer = null;
+    window.addEventListener("resize", function () {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(function () { render(); if (meta.aca_models) renderAca(); }, 150);
+    });
+    window.addEventListener("hashchange", function () { readHash(); renderControls(); render(); });
+
+    // ------------------------------------------------------------------ ACA-Net viewer
+
+    var ACA_DEFAULT_BLOCK = {time: "3", freq: "2"};   // shown when the module (time / frequency) is chosen
+    var aca = {model: null, block: ACA_DEFAULT_BLOCK.time, axis: "time"};
+    var acaToken = 0;
+
+    function renderAcaControls() {
+        var keys = Object.keys(meta.aca_models);
+        if (!aca.model || !meta.aca_models[aca.model]) aca.model = keys[0];
+        var n = meta.aca_models[aca.model].blocks;
+        if (parseInt(aca.block, 10) > n) aca.block = String(n);
+        var opts = {
+            model: keys.map(function (k) { return [k, meta.aca_models[k].name]; }),
+            block: Array.apply(null, Array(n)).map(function (_, i) { return [String(i + 1), String(i + 1)]; }),
+            axis: AXES
+        };
+        document.querySelectorAll("#aca-viewer .segmented").forEach(function (group) {
+            var key = group.getAttribute("data-aca-key");
+            group.innerHTML = "";
+            opts[key].forEach(function (opt) {
+                var b = document.createElement("button");
+                b.type = "button";
+                b.textContent = opt[1];
+                b.setAttribute("aria-pressed", String(aca[key] === opt[0]));
+                b.addEventListener("click", function () {
+                    aca[key] = opt[0];
+                    if (key === "axis") aca.block = ACA_DEFAULT_BLOCK[opt[0]];
+                    renderAcaControls();
+                    renderAca();
+                });
+                group.appendChild(b);
+            });
+        });
+    }
+
+    function renderAca() {
+        var token = ++acaToken;
+        var a = meta.aca_models[aca.model];
+        var base = "data/" + aca.model + "/";
+        var status = document.getElementById("aca-status");
+        status.textContent = "loading\u2026";
+        Promise.all([loadImage(base + "spec.png"),
+                     loadImage(base + "ctx_b" + aca.block + "_" + aca.axis + ".png")]).then(function (res) {
+            if (token !== acaToken) return;
+            var spec = res[0], w = res[1];
+            var ext = [0, a.frames * meta.hop_s, 0, 8];
+            var sc = document.querySelectorAll("#aca-spec-panels canvas");
+            ["Noisy", "Clean", "Enhanced"].forEach(function (name, k) {
+                panel(sc[k], {img: spec, x: 0, y: k * a.spec.bins, w: a.spec.frames, h: a.spec.bins},
+                      [0, a.spec.frames * meta.hop_s, 0, 8],
+                      {aspect: 0.5, xstep: 1, ystep: 2, xlabel: "Time (s)", ylabel: k === 0 ? "Frequency (kHz)" : "",
+                       title: name});
+            });
+            var names = a.contexts[aca.axis];
+            var cv = document.querySelectorAll("#aca-panels canvas:not(.colorbar)");
+            names.forEach(function (name, k) {
+                var title = name === "global" ? "Global context" : "Local context, " + name.replace("=", " = ");
+                panel(cv[k], {img: w, x: 0, y: k * a.rows, w: a.frames, h: a.rows}, ext,
+                      {aspect: 0.5, xstep: 1, ystep: 2, xlabel: "Time (s)",
+                       ylabel: k % 3 === 0 ? "Frequency (kHz)" : "", title: title});
+            });
+            var cb = document.querySelector("#aca-panels .colorbar");
+            var rowH = parseFloat(cv[0].style.height);
+            colorbar(cb, 2 * rowH + 6, [0, 0.2, 0.4, 0.6, 0.8, 1].map(function (v) { return [v, v.toFixed(1)]; }),
+                     "context-selection weight");
+            status.textContent = "";
+        }).catch(function (e) {
+            if (token === acaToken) status.textContent = e.message;
+        });
+    }
+
+    if (!meta) {
+        document.getElementById("status").textContent = "cannot load data/meta.js";
+        return;
+    }
+    readHash();
+    renderControls();
+    render();
+    if (meta.aca_models) {
+        renderAcaControls();
+        renderAca();
+    }
+})();
+</script>
+</body>
+</html>
