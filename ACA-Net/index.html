@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>ACA-Net: Attention Maps of CMGAN and MP-SENet</title>
+<title>Significance of Local and Global Context for Low-Complexity Speech Enhancement</title>
 <style>
 body {
     font-family: Arial, sans-serif;
@@ -133,6 +133,26 @@ input[type="range"]:focus-visible {
     grid-column: 4;
     grid-row: 1 / span 2;
 }
+.panels.ex {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px 6px;
+    padding-bottom: 10px;
+}
+.ex-cell audio {
+    display: block;
+    width: calc(100% - 54px);
+    margin: 2px 8px 0 46px;
+    height: 34px;
+}
+.ex-observation {
+    font-size: 15px;
+    line-height: 1.55;
+    color: #333;
+    margin: 14px 2px 0;
+}
+.ex-observation strong {
+    color: #222;
+}
 h2.section {
     font-size: 21px;
     margin: 0 0 12px;
@@ -174,20 +194,66 @@ footer {
         grid-column: 1;
         grid-row: auto;
     }
+    .panels.ex {
+        grid-template-columns: minmax(0, 1fr);
+    }
 }
 </style>
 </head>
 <body>
 <div class="page">
 
-<h1>Adaptive Context Aggregation With Linear Complexity for Dual-Path Speech Enhancement</h1>
+<h1>Significance of Local and Global Context for Low-Complexity Speech Enhancement</h1>
 <div class="sub-header">
     <h3>(Supplementary Material)</h3>
     <p><span class="authors">Venkatesh Parvathala, Sri Rama Murty Kodukula</span><br>
     Speech Information Processing Lab, Department of Electrical Engineering, IIT Hyderabad</p>
 </div>
 
-<h2 class="section">Attention maps of CMGAN and MP-SENet</h2>
+<h2 class="section">Audio examples</h2>
+<div class="viewer" id="ex-viewer">
+    <div class="control-label" id="lbl-ex">Example</div>
+    <div class="segmented" role="group" aria-labelledby="lbl-ex" id="ex-select" style="margin-bottom: 14px"></div>
+    <div class="panels ex" id="ex-panels">
+        <span class="status" id="ex-status" aria-live="polite"></span>
+    </div>
+    <p class="ex-observation" id="ex-observation"></p>
+</div>
+
+<h2 class="section second">Context-selection weights of ACA-Net</h2>
+<div class="viewer" id="aca-viewer">
+    <div class="controls">
+        <div>
+            <div class="control-label" id="lbl-aca-model">Model</div>
+            <div class="segmented" role="group" aria-labelledby="lbl-aca-model" data-aca-key="model"></div>
+        </div>
+        <div>
+            <div class="control-label" id="lbl-aca-block">Layer (block)</div>
+            <div class="segmented" role="group" aria-labelledby="lbl-aca-block" data-aca-key="block"></div>
+        </div>
+        <div>
+            <div class="control-label" id="lbl-aca-axis">Context selection</div>
+            <div class="segmented" role="group" aria-labelledby="lbl-aca-axis" data-aca-key="axis"></div>
+        </div>
+    </div>
+
+    <div class="figure-title">Spectrograms</div>
+    <div class="panels spec" id="aca-spec-panels">
+        <canvas aria-label="Noisy spectrogram"></canvas>
+        <canvas aria-label="Clean spectrogram"></canvas>
+        <canvas aria-label="ACA-Net-enhanced spectrogram"></canvas>
+    </div>
+
+    <div class="figure-title">Context Selection Weights</div>
+    <div class="panels ctx" id="aca-panels">
+        <canvas></canvas><canvas></canvas><canvas></canvas>
+        <canvas class="colorbar" aria-label="Color scale: context-selection weight, 0 to 1"></canvas>
+        <canvas></canvas><canvas></canvas><canvas></canvas>
+        <span class="status" id="aca-status" aria-live="polite"></span>
+    </div>
+</div>
+
+<h2 class="section second">Attention maps of CMGAN and MP-SENet</h2>
 <div class="viewer" id="attn-viewer">
     <div class="controls">
         <div>
@@ -226,43 +292,11 @@ footer {
     </div>
 </div>
 
-<h2 class="section second">Context-selection weights of ACA-Net</h2>
-<div class="viewer" id="aca-viewer">
-    <div class="controls">
-        <div>
-            <div class="control-label" id="lbl-aca-model">Model</div>
-            <div class="segmented" role="group" aria-labelledby="lbl-aca-model" data-aca-key="model"></div>
-        </div>
-        <div>
-            <div class="control-label" id="lbl-aca-block">Layer (block)</div>
-            <div class="segmented" role="group" aria-labelledby="lbl-aca-block" data-aca-key="block"></div>
-        </div>
-        <div>
-            <div class="control-label" id="lbl-aca-axis">Context selection</div>
-            <div class="segmented" role="group" aria-labelledby="lbl-aca-axis" data-aca-key="axis"></div>
-        </div>
-    </div>
-
-    <div class="figure-title">Spectrograms</div>
-    <div class="panels spec" id="aca-spec-panels">
-        <canvas aria-label="Noisy spectrogram"></canvas>
-        <canvas aria-label="Clean spectrogram"></canvas>
-        <canvas aria-label="ACA-Net-enhanced spectrogram"></canvas>
-    </div>
-
-    <div class="figure-title">Context Selection Weights</div>
-    <div class="panels ctx" id="aca-panels">
-        <canvas></canvas><canvas></canvas><canvas></canvas>
-        <canvas class="colorbar" aria-label="Color scale: context-selection weight, 0 to 1"></canvas>
-        <canvas></canvas><canvas></canvas><canvas></canvas>
-        <span class="status" id="aca-status" aria-live="polite"></span>
-    </div>
-</div>
-
 <footer>Speech Information Processing Lab, IIT Hyderabad</footer>
 </div>
 
 <script src="data/meta.js"></script>
+<script src="data/examples/meta.js"></script>
 <script>
 (function () {
     "use strict";
@@ -558,7 +592,7 @@ footer {
     var resizeTimer = null;
     window.addEventListener("resize", function () {
         clearTimeout(resizeTimer);
-        resizeTimer = setTimeout(function () { render(); if (meta.aca_models) renderAca(); }, 150);
+        resizeTimer = setTimeout(function () { render(); if (meta.aca_models) renderAca(); if (EX) renderEx(); }, 150);
     });
     window.addEventListener("hashchange", function () { readHash(); renderControls(); render(); });
 
@@ -631,6 +665,96 @@ footer {
         }).catch(function (e) {
             if (token === acaToken) status.textContent = e.message;
         });
+    }
+
+    // ------------------------------------------------------------------ audio examples
+
+    var EX = window.ACA_EXAMPLES || null;
+    var ex = {index: 0};
+    var exToken = 0;
+
+    function buildEx() {
+        var root = document.getElementById("ex-panels");
+        EX.order.forEach(function (key) {
+            var cell = document.createElement("div");
+            cell.className = "ex-cell";
+            var cv = document.createElement("canvas");
+            cv.setAttribute("aria-label", EX.names[key] + " spectrogram");
+            var au = document.createElement("audio");
+            au.controls = true;
+            au.preload = "none";
+            au.setAttribute("aria-label", EX.names[key] + " audio");
+            au.addEventListener("play", function () {          // one signal at a time
+                root.querySelectorAll("audio").forEach(function (o) { if (o !== au) o.pause(); });
+            });
+            cell.appendChild(cv);
+            cell.appendChild(au);
+            root.appendChild(cell);
+        });
+    }
+
+    function renderExControls() {
+        var group = document.getElementById("ex-select");
+        group.innerHTML = "";
+        EX.examples.forEach(function (e, i) {
+            var b = document.createElement("button");
+            b.type = "button";
+            b.textContent = String(i + 1);
+            b.setAttribute("aria-pressed", String(ex.index === i));
+            b.setAttribute("aria-label", "Example " + (i + 1));
+            b.addEventListener("click", function () {
+                if (ex.index === i) return;
+                ex.index = i;
+                renderExControls();
+                renderEx(true);
+            });
+            group.appendChild(b);
+        });
+        var e = EX.examples[ex.index];
+        var obs = document.getElementById("ex-observation");
+        obs.innerHTML = "";
+        if (e.observation) {
+            var lab = document.createElement("strong");
+            lab.textContent = "Observations: ";
+            obs.appendChild(lab);
+            obs.appendChild(document.createTextNode(e.observation));
+        }
+    }
+
+    function renderEx(newExample) {
+        var token = ++exToken;
+        var e = EX.examples[ex.index];
+        var base = "data/examples/" + (ex.index + 1) + "/";
+        var status = document.getElementById("ex-status");
+        var cells = document.querySelectorAll("#ex-panels .ex-cell");
+        if (newExample || !cells[0].querySelector("audio").getAttribute("src")) {
+            cells.forEach(function (c, k) {
+                var au = c.querySelector("audio");
+                au.pause();
+                au.src = base + EX.order[k] + ".wav";
+            });
+        }
+        status.textContent = "loading\u2026";
+        loadImage(base + "spec.png").then(function (img) {
+            if (token !== exToken) return;
+            var ext = [0, e.frames * EX.hop_s, 0, 8];
+            var oneColumn = window.matchMedia("(max-width: 760px)").matches;
+            EX.order.forEach(function (key, k) {
+                var title = EX.names[key] + (e.pesq[key] !== undefined ? "  \u00b7  PESQ " + e.pesq[key].toFixed(2) : "");
+                panel(cells[k].querySelector("canvas"), {img: img, x: 0, y: k * e.bins, w: e.frames, h: e.bins}, ext,
+                      {aspect: 0.5, xstep: 0.5, ystep: 2, xlabel: "Time (s)",
+                       ylabel: (k % 3 === 0 || oneColumn) ? "Frequency (kHz)" : "", title: title});
+            });
+            status.textContent = "";
+        }).catch(function (err) {
+            if (token === exToken) status.textContent = err.message;
+        });
+    }
+
+    if (EX) {
+        buildEx();
+        renderExControls();
+        renderEx(true);
     }
 
     if (!meta) {

@@ -8,12 +8,12 @@ window.ACA_META = {
   3
  ],
  "paper_panels": {
-  "time/b2/h4": "d",
-  "time/b2/h1": "e",
-  "time/b4/h4": "f",
-  "freq/b3/h4": "g",
+  "time/b4/h4": "d",
+  "time/b3/h4": "e",
+  "time/b4/h1": "f",
+  "freq/b2/h2": "g",
   "freq/b4/h3": "h",
-  "freq/b1/h1": "i"
+  "freq/b2/h3": "i"
  },
  "models": {
   "cmgan": {
