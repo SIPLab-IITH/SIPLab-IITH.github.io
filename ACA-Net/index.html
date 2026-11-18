@@ -123,6 +123,9 @@ input[type="range"]:focus-visible {
 .panels.spec {
     grid-template-columns: repeat(3, minmax(0, 1fr)) 64px;
 }
+.panels.specm {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) 64px;
+}
 .panels.maps {
     grid-template-columns: repeat(4, minmax(0, 1fr)) 64px;
 }
@@ -138,7 +141,8 @@ input[type="range"]:focus-visible {
     gap: 14px 6px;
     padding-bottom: 10px;
 }
-.ex-cell audio {
+.ex-cell audio,
+.spec-cell audio {
     display: block;
     width: calc(100% - 54px);
     margin: 2px 8px 0 46px;
@@ -184,6 +188,9 @@ footer {
     .panels.maps {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
+    .panels.specm {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
     .panels.maps .colorbar {
         grid-column: 1 / -1;
     }
@@ -220,7 +227,7 @@ footer {
     <p class="ex-observation" id="ex-observation"></p>
 </div>
 
-<h2 class="section second">Context-selection weights of ACA-Net</h2>
+<h2 class="section second">Context weights of ACA-Net</h2>
 <div class="viewer" id="aca-viewer">
     <div class="controls">
         <div>
@@ -232,22 +239,22 @@ footer {
             <div class="segmented" role="group" aria-labelledby="lbl-aca-block" data-aca-key="block"></div>
         </div>
         <div>
-            <div class="control-label" id="lbl-aca-axis">Context selection</div>
+            <div class="control-label" id="lbl-aca-axis">ACA module</div>
             <div class="segmented" role="group" aria-labelledby="lbl-aca-axis" data-aca-key="axis"></div>
         </div>
     </div>
 
     <div class="figure-title">Spectrograms</div>
     <div class="panels spec" id="aca-spec-panels">
-        <canvas aria-label="Noisy spectrogram"></canvas>
-        <canvas aria-label="Clean spectrogram"></canvas>
-        <canvas aria-label="ACA-Net-enhanced spectrogram"></canvas>
+        <div class="spec-cell"><canvas aria-label="Noisy spectrogram"></canvas><audio controls preload="none" aria-label="Noisy audio"></audio></div>
+        <div class="spec-cell"><canvas aria-label="Clean spectrogram"></canvas><audio controls preload="none" aria-label="Clean audio"></audio></div>
+        <div class="spec-cell"><canvas aria-label="ACA-Net-enhanced spectrogram"></canvas><audio controls preload="none" aria-label="ACA-Net-enhanced audio"></audio></div>
     </div>
 
-    <div class="figure-title">Context Selection Weights</div>
+    <div class="figure-title">Context Weights</div>
     <div class="panels ctx" id="aca-panels">
         <canvas></canvas><canvas></canvas><canvas></canvas>
-        <canvas class="colorbar" aria-label="Color scale: context-selection weight, 0 to 1"></canvas>
+        <canvas class="colorbar" aria-label="Color scale: context weight, 0 to 1"></canvas>
         <canvas></canvas><canvas></canvas><canvas></canvas>
         <span class="status" id="aca-status" aria-live="polite"></span>
     </div>
@@ -278,10 +285,11 @@ footer {
     </div>
 
     <div class="figure-title">Spectrograms</div>
-    <div class="panels spec" id="spec-panels">
-        <canvas aria-label="Noisy spectrogram"></canvas>
-        <canvas aria-label="Clean spectrogram"></canvas>
-        <canvas aria-label="Enhanced spectrogram"></canvas>
+    <div class="panels specm" id="spec-panels">
+        <div class="spec-cell"><canvas aria-label="Noisy spectrogram"></canvas><audio controls preload="none" aria-label="Noisy audio"></audio></div>
+        <div class="spec-cell"><canvas aria-label="Enhanced spectrogram (full attention)"></canvas><audio controls preload="none" aria-label="Enhanced audio (full attention)"></audio></div>
+        <div class="spec-cell"><canvas aria-label="Enhanced spectrogram (Local + Weighted pooling)"></canvas><audio controls preload="none" aria-label="Enhanced audio (Local + Weighted pooling)"></audio></div>
+        <div class="spec-cell"><canvas aria-label="Clean spectrogram"></canvas><audio controls preload="none" aria-label="Clean audio"></audio></div>
     </div>
 
     <div class="figure-title">Attention Maps</div>
@@ -313,6 +321,18 @@ footer {
     var state = {model: "cmgan", block: "2", axis: "time", pos: 25};
     var cache = {};
     var renderToken = 0;
+    // the four stacked spectrograms of data/<model>/spec.png, and their audio files
+    var SPEC_COLS = ["Noisy", "Enhanced (full attention)", "Enhanced (local + weighted)", "Clean"];
+    var SPEC_FILES = ["noisy", "full", "lpw", "clean"];
+    var specAudioModel = null;
+
+    function setSpecAudio() {
+        if (specAudioModel === state.model) return;    // keep playing while the slider moves
+        specAudioModel = state.model;
+        var base = "data/" + state.model + "/";
+        var au = document.querySelectorAll("#spec-panels .spec-cell audio");
+        SPEC_FILES.forEach(function (f, k) { if (au[k]) { au[k].pause(); au[k].src = base + f + ".wav"; } });
+    }
 
     // ------------------------------------------------------------------ data
 
@@ -514,12 +534,13 @@ footer {
             var sb = m.spec.bins, sf = m.spec.frames;
             var specExt = [0, sf * meta.hop_s, 0, 8];
             var marker = state.axis === "time" ? {y: state.pos * meta.bin_khz} : {x: state.pos * meta.hop_s};
-            var sc = document.querySelectorAll("#spec-panels canvas");
-            ["Noisy", "Clean", "Enhanced"].forEach(function (name, k) {
+            var sc = document.querySelectorAll("#spec-panels .spec-cell canvas");
+            SPEC_COLS.forEach(function (name, k) {
                 panel(sc[k], {img: spec, x: 0, y: k * sb, w: sf, h: sb}, specExt,
                       {aspect: 0.5, xstep: 1, ystep: 2, xlabel: "Time (s)", ylabel: k === 0 ? "Frequency (kHz)" : "",
                        title: name, marker: marker});
             });
+            setSpecAudio();
             // attention maps
             var mc = document.querySelectorAll("#map-panels canvas");
             var H = m.heads, ext, side, y0, xlab, ylab, step;
@@ -601,6 +622,16 @@ footer {
     var ACA_DEFAULT_BLOCK = {time: "3", freq: "2"};   // shown when the module (time / frequency) is chosen
     var aca = {model: null, block: ACA_DEFAULT_BLOCK.time, axis: "time"};
     var acaToken = 0;
+    var ACA_FILES = ["noisy", "clean", "enhanced"];
+    var acaAudioModel = null;
+
+    function setAcaAudio() {
+        if (acaAudioModel === aca.model) return;       // the audio is the same for every block / axis
+        acaAudioModel = aca.model;
+        var base = "data/" + aca.model + "/";
+        var au = document.querySelectorAll("#aca-spec-panels .spec-cell audio");
+        ACA_FILES.forEach(function (f, k) { if (au[k]) { au[k].pause(); au[k].src = base + f + ".wav"; } });
+    }
 
     function renderAcaControls() {
         var keys = Object.keys(meta.aca_models);
@@ -642,13 +673,14 @@ footer {
             if (token !== acaToken) return;
             var spec = res[0], w = res[1];
             var ext = [0, a.frames * meta.hop_s, 0, 8];
-            var sc = document.querySelectorAll("#aca-spec-panels canvas");
+            var sc = document.querySelectorAll("#aca-spec-panels .spec-cell canvas");
             ["Noisy", "Clean", "Enhanced"].forEach(function (name, k) {
                 panel(sc[k], {img: spec, x: 0, y: k * a.spec.bins, w: a.spec.frames, h: a.spec.bins},
                       [0, a.spec.frames * meta.hop_s, 0, 8],
                       {aspect: 0.5, xstep: 1, ystep: 2, xlabel: "Time (s)", ylabel: k === 0 ? "Frequency (kHz)" : "",
                        title: name});
             });
+            setAcaAudio();
             var names = a.contexts[aca.axis];
             var cv = document.querySelectorAll("#aca-panels canvas:not(.colorbar)");
             names.forEach(function (name, k) {
@@ -660,7 +692,7 @@ footer {
             var cb = document.querySelector("#aca-panels .colorbar");
             var rowH = parseFloat(cv[0].style.height);
             colorbar(cb, 2 * rowH + 6, [0, 0.2, 0.4, 0.6, 0.8, 1].map(function (v) { return [v, v.toFixed(1)]; }),
-                     "context-selection weight");
+                     "context weight");
             status.textContent = "";
         }).catch(function (e) {
             if (token === acaToken) status.textContent = e.message;
@@ -756,6 +788,11 @@ footer {
         renderExControls();
         renderEx(true);
     }
+
+    // one signal at a time across every section
+    document.addEventListener("play", function (e) {
+        document.querySelectorAll("audio").forEach(function (a) { if (a !== e.target) a.pause(); });
+    }, true);
 
     if (!meta) {
         document.getElementById("status").textContent = "cannot load data/meta.js";
